@@ -1,58 +1,41 @@
-import json
-import os
-
-class Trinn:
-    def __init__(self):
-        # Resolve JSON path (works locally + on Render)
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(base_dir, "..", "data", "trinn_character.json")
-        json_path = os.path.normpath(json_path)
-
-        if not os.path.exists(json_path):
-            raise FileNotFoundError(f"Missing JSON file: {json_path}")
-
-        # Load enterprise-level JSON
-        with open(json_path, "r") as f:
-            self.data = json.load(f)
-
-        # Extract core components
-        self.character = self.data.get("character", {})
-        self.states = self.data.get("states", {})
-        self.transitions = self.data.get("transitions", {})
-        self.safety = self.data.get("safety", {})
-        self.metadata = self.data.get("metadata", {})
-
-        # Initial state
-        self.state = self.character.get("state", "idle")
-
-    # -----------------------------
-    # Safety Layer
-    # -----------------------------
-    def _safety_check(self, user_input):
-        max_len = self.safety.get("max_input_length", 500)
-        blocked = self.safety.get("blocked_phrases", [])
-
-        if len(user_input) > max_len:
-            return {
-                "response": "Your message is too long to process safely.",
-                "state": self.state
-            }
-
-        for phrase in blocked:
-            if phrase.lower() in user_input.lower():
-                return {
-                    "response": self.safety.get(
-                        "fallback_response",
-                        "I can't help with that."
-                    ),
-                    "state": self.state
-                }
-
-        return None  # Safe
-
-    # -----------------------------
-    # Transition Resolver
-    # -----------------------------
-    def _resolve_transition(self, user_input):
-        # Direct match transitions
-        for key, rule in self.transitions.items():
+{
+  "character": {
+    "name": "Trinn",
+    "state": "idle"
+  },
+  "states": {
+    "idle": {},
+    "greeting": {},
+    "processing": {},
+    "responding": {},
+    "error": {}
+  },
+  "transitions": {
+    "hello": {
+      "trigger": "hello",
+      "from": ["idle", "processing"],
+      "to": "greeting",
+      "response": "Hello! How can I help you today?"
+    },
+    "bye": {
+      "trigger": "bye",
+      "from": ["idle", "processing", "responding"],
+      "to": "idle",
+      "response": "Goodbye! I'm here if you need anything else."
+    },
+    "fallback": {
+      "trigger": "*",
+      "from": ["idle", "greeting", "processing", "responding"],
+      "to": "responding",
+      "response": "I’m not sure what you mean, but I’m here to help."
+    }
+  },
+  "safety": {
+    "max_input_length": 500,
+    "blocked_phrases": ["kill", "harm", "illegal", "self-harm"],
+    "fallback_response": "I can't help with that, but I can help with something else."
+  },
+  "metadata": {
+    "version": "1.0.0"
+  }
+}
