@@ -1,3 +1,8 @@
+from fastapi import APIRouter
+
+router = APIRouter()
+
+
 from services.trinn_interaction_engine import TrinnInteractionEngine
 
 interaction_engine = TrinnInteractionEngine()

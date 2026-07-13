@@ -70,3 +70,4 @@ class Trinn:
     def set_state(self, new_state):
         if new_state in self.states:
             self.state = new_state
+

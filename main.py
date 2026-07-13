@@ -36,6 +36,8 @@ from api.routes.wchtr import router as wchtr_router
 
 from api.routes.wchtr_renderer import router as renderer_router
 
+from api.routes.wchtr_voice import router as wchtr_voice_router
+
 
 # ─────────────────────────────────────────────
 # FASTAPI APP
@@ -63,8 +65,7 @@ app.include_router(goals_router, prefix="/api/goals")
 app.include_router(f1ndr_router, prefix="/api/f1ndr")
 app.include_router(wchtr_router, prefix="/api/wchtr")
 app.include_router(renderer_router, prefix="/api/render")
-
-
+app.include_router(wchtr_voice_router)
 # ─────────────────────────────────────────────
 # ROOT ENDPOINT
 # ─────────────────────────────────────────────

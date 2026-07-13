@@ -1,11 +1,5 @@
-def build_dialogue_contract(snapshot):
+def build_dialogue_contract(history):
     return {
-        "dialogue": {
-            "personality": snapshot["personality"],
-            "history": snapshot["history"]
-        },
-        "meta": {
-            "engine": "DialogueEngine",
-            "contract_type": "dialogue"
-        }
+        "count": len(history),
+        "messages": history
     }
