@@ -3,54 +3,70 @@ import os
 
 class Trinn:
     def __init__(self):
-        # Correct path — works locally AND on Render
         base_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(base_dir, "..", "data", "trinn_character.json")
 
-        # Normalize path for Render
-        json_path = os.path.normpath(json_path)
-
-        if not os.path.exists(json_path):
-            raise FileNotFoundError(f"Missing JSON file: {json_path}")
-
         with open(json_path, "r") as f:
-            self.character_data = json.load(f)
+            data = json.load(f)
 
-        # Basic state
-        self.state = self.character_data.get("state", "idle")
-        self.character = self.character_data.get("character", "default")
+        self.character = data.get("character", {})
+        self.states = data.get("states", {})
+        self.transitions = data.get("transitions", {})
+        self.safety = data.get("safety", {})
+        self.metadata = data.get("metadata", {})
+
+        self.state = self.character.get("state", "idle")
+
+    def get_profile(self):
+        return {
+            "name": self.character.get("name", "Unknown"),
+            "state": self.state,
+            "metadata": self.metadata
+        }
+
+    def _safety_check(self, text):
+        max_len = self.safety.get("max_input_length", 500)
+        blocked = self.safety.get("blocked_phrases", [])
+
+        if len(text) > max_len:
+            return False, "Input too long."
+
+        lowered = text.lower()
+        for phrase in blocked:
+            if phrase in lowered:
+                return False, self.safety.get("fallback_response", "I can't help with that.")
+
+        return True, None
+
+    def _resolve_transition(self, text):
+        lowered = text.lower()
+
+        for key, t in self.transitions.items():
+            trigger = t.get("trigger")
+            if trigger == "*" or trigger in lowered:
+                if self.state in t.get("from", []):
+                    return t
+
+        return None
+
+    def _apply_transition(self, transition):
+        self.state = transition.get("to", self.state)
+        return transition.get("response", "")
+
+    def interact(self, text):
+        safe, msg = self._safety_check(text)
+        if not safe:
+            return msg
+
+        transition = self._resolve_transition(text)
+        if not transition:
+            return self.safety.get("fallback_response", "I’m not sure what you mean.")
+
+        return self._apply_transition(transition)
 
     def get_state(self):
-        return {
-            "character": self.character,
-            "state": self.state
-        }
+        return self.state
 
     def set_state(self, new_state):
-        self.state = new_state
-        return {
-            "character": self.character,
-            "state": self.state
-        }
-
-    def interact(self, input_text):
-        # Placeholder logic — replace with your real engine rules
-        if "hello" in input_text.lower():
-            self.state = "greeting"
-            return {
-                "response": "Hello! How can I help?",
-                "state": self.state
-            }
-
-        if "bye" in input_text.lower():
-            self.state = "idle"
-            return {
-                "response": "Goodbye!",
-                "state": self.state
-            }
-
-        # Default fallback
-        return {
-            "response": "I’m not sure what you mean.",
-            "state": self.state
-        }
+        if new_state in self.states:
+            self.state = new_state
