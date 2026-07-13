@@ -73,4 +73,4 @@ app.include_router(renderer_router, prefix="/api/render")
 def root():
     return {
         "status": "ok",
-        "message": "watcHr unified backend is running.",
+        "message": "watcHr unified backend is running.",}
