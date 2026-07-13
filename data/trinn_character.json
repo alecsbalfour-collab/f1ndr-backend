@@ -1,0 +1,41 @@
+{
+  "character": {
+    "name": "Trinn",
+    "state": "idle"
+  },
+  "states": {
+    "idle": {},
+    "greeting": {},
+    "processing": {},
+    "responding": {},
+    "error": {}
+  },
+  "transitions": {
+    "hello": {
+      "trigger": "hello",
+      "from": ["idle", "processing"],
+      "to": "greeting",
+      "response": "Hello! How can I help you today?"
+    },
+    "bye": {
+      "trigger": "bye",
+      "from": ["idle", "processing", "responding"],
+      "to": "idle",
+      "response": "Goodbye! I'm here if you need anything else."
+    },
+    "fallback": {
+      "trigger": "*",
+      "from": ["idle", "greeting", "processing", "responding"],
+      "to": "responding",
+      "response": "I’m not sure what you mean, but I’m here to help."
+    }
+  },
+  "safety": {
+    "max_input_length": 500,
+    "blocked_phrases": ["kill", "harm", "illegal", "self-harm"],
+    "fallback_response": "I can't help with that, but I can help with something else."
+  },
+  "metadata": {
+    "version": "1.0.0"
+  }
+}
