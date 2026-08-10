@@ -44,7 +44,7 @@ from api.routes.wchtr_voice import router as wchtr_voice_router
 # ─────────────────────────────────────────────
 
 app = FastAPI(
-    title="watcHr Platform Backend",
+    title="f1ndr Backend",
     version="1.0.0",
     description="Unified enterprise backend powering Trinn, f1ndr, and wchtr."
 )
@@ -70,8 +70,45 @@ app.include_router(wchtr_voice_router)
 # ROOT ENDPOINT
 # ─────────────────────────────────────────────
 
+app = FastAPI(
+    title="f1ndr Backend",
+    version="1.0.0",
+    description="Backend powering the f1ndr search engine"
+)
+
+# Existing root route (keep this)
+@app.get("/")
+def wtchr():
+    return {"message": "wtchr root route"}
+
+# ⭐ ADD THIS — your new search endpoint
+@app.get("/search")
+def search(
+    keywords: str | None = None,
+    category: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    lat: float | None = None,
+    lng: float | None = None,
+    radius_km: float | None = None,
+    sort: str | None = None
+):
+    return {
+        "status": "search endpoint working",
+        "params": {
+            "keywords": keywords,
+            "category": category,
+            "min_price": min_price,
+            "max_price": max_price,
+            "lat": lat,
+            "lng": lng,
+            "radius_km": radius_km,
+            "sort": sort
+        }
+    }
+
 @app.get("/")
 def root():
     return {
         "status": "ok",
-        "message": "watcHr unified backend is running.",}
+        "message": "f1ndr unified backend is running.",}
