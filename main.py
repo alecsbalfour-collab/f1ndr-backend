@@ -60,28 +60,26 @@ app.include_router(scene_router, prefix="/api/scene")
 app.include_router(animation_router, prefix="/api/animation")
 app.include_router(dialogue_router, prefix="/api/dialogue")
 app.include_router(evolution_router, prefix="/api/evolution")
+app.include_router(trinn_router, prefix="/api/trinn")
+app.include_router(registry_router, prefix="/api/registry")
+app.include_router(scene_router, prefix="/api/scene")
+app.include_router(animation_router, prefix="/api/animation")
+app.include_router(dialogue_router, prefix="/api/dialogue")
+app.include_router(evolution_router, prefix="/api/evolution")
 app.include_router(knowledge_router, prefix="/api/knowledge")
 app.include_router(goals_router, prefix="/api/goals")
 app.include_router(f1ndr_router, prefix="/api/f1ndr")
 app.include_router(wchtr_router, prefix="/api/wchtr")
 app.include_router(renderer_router, prefix="/api/render")
 app.include_router(wchtr_voice_router)
-# ─────────────────────────────────────────────
+
 # ROOT ENDPOINT
-# ─────────────────────────────────────────────
-
-app = FastAPI(
-    title="f1ndr Backend",
-    version="1.0.0",
-    description="Backend powering the f1ndr search engine"
-)
-
-# Existing root route (keep this)
 @app.get("/")
 def wtchr():
     return {"message": "wtchr root route"}
 
-# ⭐ ADD THIS — your new search endpoint
+
+# Search endpoint
 @app.get("/search")
 def search(
     keywords: str | None = None,
@@ -106,13 +104,6 @@ def search(
             "sort": sort
         }
     }
-app = FastAPI(
-    title="f1ndr Backend",
-    version="1.0.0",
-    description="Backend powering the f1ndr search engine"
-)
-
-# Existing route (KEEP THIS)
 @app.get("/")
 def wtchr():
     return {"message": "wtchr root route"}
@@ -145,6 +136,31 @@ def search(
 
 @app.get("/")
 def root():
+    return
+    @app.get("/search")
+def search(
+    keywords: str | None = None,
+    category: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    lat: float | None = None,
+    lng: float | None = None,
+    radius_km: float | None = None,
+    sort: str | None = None
+):
     return {
+        "status": "search endpoint working",
+        "params": {
+            "keywords": keywords,
+            "category": category,
+            "min_price": min_price,
+            "max_price": max_price,
+            "lat": lat,
+            "lng": lng,
+            "radius_km": radius_km,
+            "sort": sort
+        }
+    }
+{
         "status": "ok",
         "message": "f1ndr unified backend is running.",}
