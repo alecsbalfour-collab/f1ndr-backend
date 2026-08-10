@@ -106,6 +106,42 @@ def search(
             "sort": sort
         }
     }
+app = FastAPI(
+    title="f1ndr Backend",
+    version="1.0.0",
+    description="Backend powering the f1ndr search engine"
+)
+
+# Existing route (KEEP THIS)
+@app.get("/")
+def wtchr():
+    return {"message": "wtchr root route"}
+
+# ⭐ ADD THIS BELOW
+@app.get("/search")
+def search(
+    keywords: str | None = None,
+    category: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    lat: float | None = None,
+    lng: float | None = None,
+    radius_km: float | None = None,
+    sort: str | None = None
+):
+    return {
+        "status": "search endpoint working",
+        "params": {
+            "keywords": keywords,
+            "category": category,
+            "min_price": min_price,
+            "max_price": max_price,
+            "lat": lat,
+            "lng": lng,
+            "radius_km": radius_km,
+            "sort": sort
+        }
+    }
 
 @app.get("/")
 def root():
