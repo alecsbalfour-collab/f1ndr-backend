@@ -1,17 +1,17 @@
 from fastapi import APIRouter
-from services.goals.goal_service import GoalService
+from services.f1ndr_service import F1ndrService
 
 router = APIRouter()
-goals = GoalService()
-
-@router.get("/goals")
-def get_goals():
-    return goals.get_all_goals()
+service = F1ndrService()
 
 @router.post("/goals")
-def add_goal(goal: dict):
-    return goals.add_goal(goal)
-
-@router.delete("/goals/{goal_id}")
-def delete_goal(goal_id: str):
-    return goals.delete_goal(goal_id)
+def goals(payload: dict):
+    """
+    Goals route for Findr.
+    Accepts JSON payload: { "data": ... }
+    """
+    return {
+        "action": "goals",
+        "input": payload.get("data"),
+        "status": "goal-processed"
+    }

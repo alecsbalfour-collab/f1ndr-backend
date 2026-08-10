@@ -1,37 +1,32 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from typing import Optional
 from services.f1ndr.f1ndr_service import F1ndrService
 
-router = APIRouter(prefix="/f1ndr", tags=["f1ndr"])
-f1ndr = F1ndrService()
+router = APIRouter()
+service = F1ndrService()
 
-@router.get("/status")
-def status():
-    return {"status": "ok", "module": "f1ndr"}
+@router.get("/search")
+def search(
+    keywords: Optional[str] = None,
+    category: Optional[str] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    radius_km: Optional[float] = None,
+    sort: Optional[str] = None
+):
+    payload = {
+        "query": {
+            "keywords": keywords,
+            "category": category,
+            "min_price": min_price,
+            "max_price": max_price,
+            "lat": lat,
+            "lng": lng,
+            "radius_km": radius_km,
+            "sort": sort
+        }
+    }
 
-@router.post("/search")
-def search(payload: dict):
-    try:
-        return f1ndr.search(payload)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/scrape")
-def scrape(payload: dict):
-    try:
-        return f1ndr.scrape(payload)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/render")
-def render(payload: dict):
-    try:
-        return f1ndr.render(payload)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/contract")
-def contract(payload: dict):
-    try:
-        return f1ndr.contract(payload)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return service.search(payload)

@@ -1,23 +1,30 @@
 from fastapi import APIRouter
-from db.mongo import get_listings_collection
+from services.f1ndr_service import F1ndrService
 
 router = APIRouter()
+service = F1ndrService()
 
+@router.post("/listings")
+def listings(payload: dict):
+    """
+    Listings route for Findr.
+    Accepts JSON payload:
+    {
+        "targets": ["url1", "url2", "url3"]
+    }
+    """
+    targets = payload.get("targets")
+    if not targets or not isinstance(targets, list):
+        return {"error": "Missing 'targets' list"}
 
-@router.get("/")
-def get_listings(limit: int = 50):
-    col = get_listings_collection()
-    docs = list(col.find().sort("created_at", -1).limit(limit))
-    for d in docs:
-        d["_id"] = str(d["_id"])
-    return docs
+    results = []
 
+    for target in targets:
+        result = service.scrape({"target": target})
+        results.append(result)
 
-@router.get("/{listing_id}")
-def get_listing(listing_id: str):
-    col = get_listings_collection()
-    doc = col.find_one({"_id": listing_id})
-    if not doc:
-        return {"error": "Listing not found"}
-    doc["_id"] = str(doc["_id"])
-    return doc
+    return {
+        "action": "listings",
+        "count": len(results),
+        "results": results
+    }

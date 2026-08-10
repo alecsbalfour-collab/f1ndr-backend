@@ -1,44 +1,46 @@
 from fastapi import APIRouter
-from db.mongo import get_listings_collection
+from typing import Optional
 
 router = APIRouter()
 
+@router.get("/insights")
+def insights(
+    text: Optional[str] = None,
+    mode: Optional[str] = "summary"
+):
+    if not text:
+        return {"error": "Missing 'text' field"}
 
-@router.get("/popular")
-def popular_categories():
-    col = get_listings_collection()
-    data = list(col.aggregate([
-        {"$group": {"_id": "$category", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]))
-    return {"popular_categories": data}
+    if mode == "summary":
+        return {
+            "action": "summary",
+            "input": text,
+            "output": f"Summary: {text[:75]}..."
+        }
 
+    if mode == "keywords":
+        words = text.split()
+        keywords = list({w.lower().strip(",.!?") for w in words if len(w) > 4})
+        return {
+            "action": "keywords",
+            "input": text,
+            "output": keywords
+        }
 
-@router.get("/demographics")
-def demographics():
-    col = get_listings_collection()
+    if mode == "sentiment":
+        sentiment = "neutral"
+        lowered = text.lower()
+        if any(w in lowered for w in ["love", "great", "awesome", "perfect"]):
+            sentiment = "positive"
+        if any(w in lowered for w in ["hate", "terrible", "bad", "awful"]):
+            sentiment = "negative"
 
-    income = list(col.aggregate([
-        {"$group": {"_id": "$demographics.income_level", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]))
-
-    demo_groups = list(col.aggregate([
-        {"$group": {"_id": "$demographics.likely_demographic", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]))
+        return {
+            "action": "sentiment",
+            "input": text,
+            "output": sentiment
+        }
 
     return {
-        "income_levels": income,
-        "likely_demographics": demo_groups
+        "error": "Invalid mode. Use 'summary', 'keywords', or 'sentiment'."
     }
-
-
-@router.get("/platform_activity")
-def platform_activity():
-    col = get_listings_collection()
-    data = list(col.aggregate([
-        {"$group": {"_id": "$platform", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]))
-    return {"platform_activity": data}

@@ -2,16 +2,24 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-DEFAULT_CATEGORIES = [
-    "vehicles",
-    "housing",
-    "electronics",
-    "jobs",
-    "services",
-    "misc"
-]
-
-
-@router.get("/")
-def list_categories():
-    return {"categories": DEFAULT_CATEGORIES}
+@router.get("/categories")
+def get_categories():
+    return {
+        "categories": [
+            "cars",
+            "trucks",
+            "motorcycles",
+            "bicycles",
+            "electronics",
+            "phones",
+            "computers",
+            "furniture",
+            "appliances",
+            "real_estate",
+            "rentals",
+            "jobs",
+            "services",
+            "free",
+            "misc"
+        ]
+    }

@@ -1,10 +1,10 @@
-class WchtrVoiceService:
+class VoiceService:
     def generate(self, text: str):
         if not text:
             return {"error": "Missing text"}
 
         return {
-            "engine": "wtchr-voice",
+            "engine": "global-voice",
             "input": text,
-            "output": f"wtchr-voice-output-for: {text}"
+            "output": f"voice-output-for: {text}"
         }

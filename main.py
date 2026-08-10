@@ -1,166 +1,43 @@
 from fastapi import FastAPI
 
-# ─────────────────────────────────────────────
-# ROUTER IMPORTS
-# ─────────────────────────────────────────────
-
-# Trinn Intelligence Stack
-from api.routes.trinn import router as trinn_router
-
-# Multi‑Character Registry
+# Core Findr routes
+from api.routes.search import router as search_router
+from api.routes.listings import router as listings_router
+from api.routes.renderer import router as renderer_router
+from api.routes.contract import router as contract_router
+from api.routes.dialogue import router as dialogue_router
+from api.routes.goals import router as goals_router
+from api.routes.scene import router as scene_router
 from api.routes.registry import router as registry_router
 
-# Scene Engine (will exist soon)
-from api.routes.scene import router as scene_router
-
-# Animation Engine (will exist soon)
-from api.routes.animation import router as animation_router
-
-# Dialogue Engine (LLM layer will exist soon)
-from api.routes.dialogue import router as dialogue_router
-
-# Evolution Engine (long‑term growth)
-from api.routes.evolution import router as evolution_router
-
-# Knowledge Engine (facts/world model)
-from api.routes.knowledge import router as knowledge_router
-
-# Goal/Task Engine
-from api.routes.goals import router as goals_router
-
-# f1ndr Search Engine
-from api.routes.f1ndr import router as f1ndr_router
-
-# wchtr App API
-from api.routes.wchtr import router as wchtr_router
-
-from api.routes.wchtr_renderer import router as renderer_router
-
+# WTCHR routes
+from api.routes.wtchr import router as wtchr_router
+from api.routes.wchtr_renderer import router as wchtr_renderer_router
 from api.routes.wchtr_voice import router as wchtr_voice_router
 
+# New global routes
+from api.routes.voice import router as voice_router
+from api.routes.evolution import router as evolution_router
+from api.routes.trinn import router as trinn_router
 
-# ─────────────────────────────────────────────
-# FASTAPI APP
-# ─────────────────────────────────────────────
+app = FastAPI()
 
-app = FastAPI(
-    title="f1ndr Backend",
-    version="1.0.0",
-    description="Unified enterprise backend powering Trinn, f1ndr, and wchtr."
-)
+# Register core Findr routes
+app.include_router(search_router)
+app.include_router(listings_router)
+app.include_router(renderer_router)
+app.include_router(contract_router)
+app.include_router(dialogue_router)
+app.include_router(goals_router)
+app.include_router(scene_router)
+app.include_router(registry_router)
 
-
-# ─────────────────────────────────────────────
-# ROUTER REGISTRATION
-# ─────────────────────────────────────────────
-
-app.include_router(trinn_router, prefix="/api/trinn")
-app.include_router(registry_router, prefix="/api/registry")
-app.include_router(scene_router, prefix="/api/scene")
-app.include_router(animation_router, prefix="/api/animation")
-app.include_router(dialogue_router, prefix="/api/dialogue")
-app.include_router(evolution_router, prefix="/api/evolution")
-app.include_router(trinn_router, prefix="/api/trinn")
-app.include_router(registry_router, prefix="/api/registry")
-app.include_router(scene_router, prefix="/api/scene")
-app.include_router(animation_router, prefix="/api/animation")
-app.include_router(dialogue_router, prefix="/api/dialogue")
-app.include_router(evolution_router, prefix="/api/evolution")
-app.include_router(knowledge_router, prefix="/api/knowledge")
-app.include_router(goals_router, prefix="/api/goals")
-app.include_router(f1ndr_router, prefix="/api/f1ndr")
-app.include_router(wchtr_router, prefix="/api/wchtr")
-app.include_router(renderer_router, prefix="/api/render")
+# Register WTCHR subsystem
+app.include_router(wtchr_router)
+app.include_router(wchtr_renderer_router)
 app.include_router(wchtr_voice_router)
 
-# ROOT ENDPOINT
-@app.get("/")
-def wtchr():
-    return {"message": "wtchr root route"}
-
-
-# Search endpoint
-@app.get("/search")
-def search(
-    keywords: str | None = None,
-    category: str | None = None,
-    min_price: float | None = None,
-    max_price: float | None = None,
-    lat: float | None = None,
-    lng: float | None = None,
-    radius_km: float | None = None,
-    sort: str | None = None
-):
-    return {
-        "status": "search endpoint working",
-        "params": {
-            "keywords": keywords,
-            "category": category,
-            "min_price": min_price,
-            "max_price": max_price,
-            "lat": lat,
-            "lng": lng,
-            "radius_km": radius_km,
-            "sort": sort
-        }
-    }
-@app.get("/")
-def wtchr():
-    return {"message": "wtchr root route"}
-
-# ⭐ ADD THIS BELOW
-@app.get("/search")
-def search(
-    keywords: str | None = None,
-    category: str | None = None,
-    min_price: float | None = None,
-    max_price: float | None = None,
-    lat: float | None = None,
-    lng: float | None = None,
-    radius_km: float | None = None,
-    sort: str | None = None
-):
-    return {
-        "status": "search endpoint working",
-        "params": {
-            "keywords": keywords,
-            "category": category,
-            "min_price": min_price,
-            "max_price": max_price,
-            "lat": lat,
-            "lng": lng,
-            "radius_km": radius_km,
-            "sort": sort
-        }
-    }
-
-@app.get("/")
-def root():
-    return
-    @app.get("/search")
-def search(
-    keywords: str | None = None,
-    category: str | None = None,
-    min_price: float | None = None,
-    max_price: float | None = None,
-    lat: float | None = None,
-    lng: float | None = None,
-    radius_km: float | None = None,
-    sort: str | None = None
-):
-    return {
-        "status": "search endpoint working",
-        "params": {
-            "keywords": keywords,
-            "category": category,
-            "min_price": min_price,
-            "max_price": max_price,
-            "lat": lat,
-            "lng": lng,
-            "radius_km": radius_km,
-            "sort": sort
-        }
-    }
-{
-        "status": "ok",
-        "message": "f1ndr unified backend is running.",}
+# Register new global engines
+app.include_router(voice_router)
+app.include_router(evolution_router)
+app.include_router(trinn_router)

@@ -1,10 +1,10 @@
-class WchtrRendererService:
+class RendererService:
     def render(self, frame):
         if not frame:
             return {"error": "Missing frame"}
 
         return {
-            "engine": "wtchr-renderer",
+            "engine": "global-renderer",
             "input": frame,
-            "output": "rendered-wtchr-frame"
+            "output": "rendered-global-frame"
         }

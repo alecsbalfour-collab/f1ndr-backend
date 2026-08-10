@@ -1,20 +1,37 @@
 from fastapi import APIRouter
-from discovery.run import run_discovery
-from db.mongo import get_discovery_collection
+from typing import Optional
+from discovery.scan import scan
+from discovery.classify import classify
+from discovery.generator import generate
 
 router = APIRouter()
 
+@router.get("/discover")
+def discover(
+    mode: Optional[str] = "scan",
+    input: Optional[str] = None
+):
+    if mode == "scan":
+        return {
+            "action": "scan",
+            "input": input,
+            "output": scan(input)
+        }
 
-@router.get("/sites")
-def list_discovered_sites():
-    col = get_discovery_collection()
-    sites = list(col.find())
-    for s in sites:
-        s["_id"] = str(s["_id"])
-    return sites
+    if mode == "classify":
+        return {
+            "action": "classify",
+            "input": input,
+            "output": classify(input)
+        }
 
+    if mode == "generate":
+        return {
+            "action": "generate",
+            "input": input,
+            "output": generate(input)
+        }
 
-@router.post("/scan")
-def scan_for_new_sites():
-    created = run_discovery()
-    return {"status": "completed", "created_files": created}
+    return {
+        "error": "Invalid mode. Use 'scan', 'classify', or 'generate'."
+    }

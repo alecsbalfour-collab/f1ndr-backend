@@ -1,42 +1,39 @@
-from fastapi import APIRouter, HTTPException
-from services.knowledge.knowledge_service import KnowledgeService
-from models.knowledge.knowledge_model import build_knowledge_contract
+from fastapi import APIRouter
+from typing import Optional
 
 router = APIRouter()
-knowledge = KnowledgeService()
 
-@router.post("/add")
-def add_fact(payload: dict):
-    key = payload.get("key")
-    value = payload.get("value")
-    category = payload.get("category")
+@router.get("/knowledge")
+def knowledge(
+    query: Optional[str] = None,
+    mode: Optional[str] = "define"
+):
+    if not query:
+        return {"error": "Missing 'query' field"}
 
-    if not key or not value:
-        raise HTTPException(status_code=400, detail="key and value required")
+    if mode == "define":
+        return {
+            "action": "define",
+            "query": query,
+            "output": f"{query}: A general definition placeholder."
+        }
 
-    knowledge.add_fact(key, value, category)
-    return {"added": key}
+    if mode == "facts":
+        words = query.split()
+        facts = [w for w in words if len(w) > 5]
+        return {
+            "action": "facts",
+            "query": query,
+            "output": facts
+        }
 
-@router.post("/remove")
-def remove_fact(payload: dict):
-    key = payload.get("key")
-    if not key:
-        raise HTTPException(status_code=400, detail="key required")
+    if mode == "explain":
+        return {
+            "action": "explain",
+            "query": query,
+            "output": f"Explanation placeholder for: {query}"
+        }
 
-    knowledge.remove_fact(key)
-    return {"removed": key}
-
-@router.get("/fact/{key}")
-def get_fact(key: str):
-    fact = knowledge.get_fact(key)
-    if fact is None:
-        raise HTTPException(status_code=404, detail="fact not found")
-    return {"key": key, "value": fact}
-
-@router.get("/category/{category}")
-def get_category(category: str):
-    return knowledge.get_category(category)
-
-@router.get("/contract")
-def get_contract():
-    return build_knowledge_contract(knowledge.snapshot())
+    return {
+        "error": "Invalid mode. Use 'define', 'facts', or 'explain'."
+    }

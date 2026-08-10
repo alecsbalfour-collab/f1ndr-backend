@@ -1,11 +1,13 @@
 from fastapi import APIRouter
+from services.f1ndr_service import F1ndrService
 
 router = APIRouter()
+service = F1ndrService()
 
-@router.post("/wchtr/voice")
-def wchtr_voice(payload: dict):
+@router.post("/voice")
+def voice(payload: dict):
     """
-    WTCHR Voice route.
+    Global Voice route.
     Accepts JSON payload: { "text": ... }
     """
     text = payload.get("text")
@@ -13,7 +15,7 @@ def wchtr_voice(payload: dict):
         return {"error": "Missing 'text' field"}
 
     return {
-        "action": "wchtr_voice",
+        "action": "voice",
         "input": text,
-        "voice": "generated-wtchr-voice"
+        "voice": "generated-global-voice"
     }

@@ -1,35 +1,22 @@
-from fastapi import APIRouter, HTTPException
-from services.registry_service import RegistryService
-from services.trinn_controller import TrinnController
+from fastapi import APIRouter
+from services.f1ndr_service import F1ndrService
 
 router = APIRouter()
-registry = RegistryService()
+service = F1ndrService()
 
-@router.get("/characters")
-def list_characters():
-    return registry.list_characters()
+@router.post("/registry")
+def registry(payload: dict):
+    """
+    Registry route for Findr.
+    Accepts JSON payload: { "data": ... }
+    """
+    data = payload.get("data")
 
-@router.post("/characters/{name}")
-def add_character(name: str):
-    if registry.get_character(name):
-        raise HTTPException(status_code=400, detail="Character already exists")
+    if not data:
+        return {"error": "Missing 'data' field"}
 
-    registry.add_character(name, TrinnController())
-    return {"added": name}
-
-@router.delete("/characters/{name}")
-def remove_character(name: str):
-    if not registry.get_character(name):
-        raise HTTPException(status_code=404, detail="Character not found")
-
-    registry.remove_character(name)
-    return {"removed": name}
-
-@router.get("/characters/{name}/contract")
-def get_character_contract(name: str):
-    char = registry.get_character(name)
-    if not char:
-        raise HTTPException(status_code=404, detail="Character not found")
-
-    # requires emotion + reinforcement from interaction engine
-    return char.get_contract({}, {})
+    return {
+        "action": "registry",
+        "input": data,
+        "status": "registered"
+    }
