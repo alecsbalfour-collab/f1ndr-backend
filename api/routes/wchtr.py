@@ -1,27 +1,27 @@
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.wtchr.wtchr_service import WtchrService
+from models.wtchr.wtchr_model import WtchrRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = WtchrService()
+
 
 @router.post("/wtchr")
-def wtchr(payload: dict):
+def wtchr_core(payload: WtchrRequest):
     """
-    WTCHR route for Findr.
-    Accepts JSON payload: { "target": "...", "mode": "..." }
+    WTCHR core engine.
+    Handles watch timeline, frame processing, events, and state updates.
     """
-    target = payload.get("target")
-    mode = payload.get("mode", "default")
 
-    if not target:
-        return {"error": "Missing 'target' field"}
+    try:
+        result = service.process(payload)
 
-    # WTCHR currently uses scrape() as its backend engine
-    result = service.scrape({"target": target})
+        return {
+            "status": "success",
+            "engine": "wtchr",
+            "input": payload.dict(),
+            "output": result
+        }
 
-    return {
-        "action": "wtchr",
-        "mode": mode,
-        "target": target,
-        "result": result
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

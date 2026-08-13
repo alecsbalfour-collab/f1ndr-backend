@@ -1,21 +1,19 @@
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.voice.voice_service import VoiceService
+from models.voice.voice_model import VoiceRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = VoiceService()
 
 @router.post("/voice")
-def voice(payload: dict):
-    """
-    Global Voice route.
-    Accepts JSON payload: { "text": ... }
-    """
-    text = payload.get("text")
-    if not text:
-        return {"error": "Missing 'text' field"}
-
-    return {
-        "action": "voice",
-        "input": text,
-        "voice": "generated-global-voice"
-    }
+def voice(payload: VoiceRequest):
+    try:
+        result = service.process(payload.dict())
+        return {
+            "status": "success",
+            "engine": "voice",
+            "input": payload.dict(),
+            "output": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

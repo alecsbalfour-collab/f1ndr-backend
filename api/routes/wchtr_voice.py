@@ -1,19 +1,27 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from services.wtchr.wchtr_voice_service import WchtrVoiceService
+from models.wtchr.wchtr_voice_model import WchtrVoiceRequest
 
 router = APIRouter()
+service = WchtrVoiceService()
+
 
 @router.post("/wchtr/voice")
-def wchtr_voice(payload: dict):
+def wchtr_voice(payload: WchtrVoiceRequest):
     """
-    WTCHR Voice route.
-    Accepts JSON payload: { "text": ... }
+    WTCHR voice engine.
+    Handles watch-specific voice synthesis, alerts, tones, and voice responses.
     """
-    text = payload.get("text")
-    if not text:
-        return {"error": "Missing 'text' field"}
 
-    return {
-        "action": "wchtr_voice",
-        "input": text,
-        "voice": "generated-wtchr-voice"
-    }
+    try:
+        result = service.generate_voice(payload)
+
+        return {
+            "status": "success",
+            "engine": "wchtr_voice",
+            "input": payload.dict(),
+            "output": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

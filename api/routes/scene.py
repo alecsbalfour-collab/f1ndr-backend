@@ -1,23 +1,27 @@
-
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.scene.scene_service import SceneService
+from models.scene_model import SceneRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = SceneService()
+
 
 @router.post("/scene")
-def scene(payload: dict):
+def generate_scene(payload: SceneRequest):
     """
-    Scene route for Findr.
-    Accepts JSON payload: { "data": ... }
+    Generate a scene using the existing SceneService.
+    This wires the route → service → engine → model exactly as your architecture intends.
     """
-    data = payload.get("data")
 
-    if not data:
-        return {"error": "Missing 'data' field"}
+    try:
+        result = service.generate_scene(payload)
 
-    return {
-        "action": "scene",
-        "input": data,
-        "scene": "generated-scene"
-    }
+        return {
+            "status": "success",
+            "engine": "scene",
+            "input": payload.dict(),
+            "output": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

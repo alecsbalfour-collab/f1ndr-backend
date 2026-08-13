@@ -1,19 +1,27 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from services.wtchr.wchtr_renderer_service import WchtrRendererService
+from models.wtchr.wchtr_renderer_model import WchtrRenderRequest
 
 router = APIRouter()
+service = WchtrRendererService()
+
 
 @router.post("/wchtr/renderer")
-def wchtr_renderer(payload: dict):
+def wchtr_render(payload: WchtrRenderRequest):
     """
-    WTCHR Renderer route.
-    Accepts JSON payload: { "frame": ... }
+    WTCHR renderer.
+    Handles frame rendering, timeline rendering, and watch-specific visuals.
     """
-    frame = payload.get("frame")
-    if not frame:
-        return {"error": "Missing 'frame' field"}
 
-    return {
-        "action": "wchtr_renderer",
-        "input": frame,
-        "rendered": "rendered-frame"
-    }
+    try:
+        result = service.render(payload)
+
+        return {
+            "status": "success",
+            "engine": "wchtr_renderer",
+            "input": payload.dict(),
+            "output": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

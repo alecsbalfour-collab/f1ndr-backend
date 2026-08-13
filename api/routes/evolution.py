@@ -1,21 +1,27 @@
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.evolution.evolution_service import EvolutionService
+from models.evolution.evolution_model import EvolutionRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = EvolutionService()
+
 
 @router.post("/evolution")
-def evolution(payload: dict):
+def run_evolution(payload: EvolutionRequest):
     """
-    Evolution route for Findr.
-    Accepts JSON payload: { "data": ... }
+    Run an evolution cycle using the existing EvolutionService.
+    This wires the route → service → engine → model exactly as your architecture intends.
     """
-    data = payload.get("data")
-    if not data:
-        return {"error": "Missing 'data' field"}
 
-    return {
-        "action": "evolution",
-        "input": data,
-        "status": "evolved"
-    }
+    try:
+        result = service.evolve(payload)
+
+        return {
+            "status": "success",
+            "engine": "evolution",
+            "input": payload.dict(),
+            "output": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,13 +1,13 @@
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.scrapers.scrapers_service import ScrapersService
+from models.scrapers.scrapers_model import ScraperRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = ScrapersService()
 
-@router.post("/scrape")
-def scrape(payload: dict):
-    """
-    Scrape route for Findr.
-    Accepts JSON payload: { "target": "URL or text" }
-    """
-    return service.scrape(payload)
+@router.post("/scrapers")
+def scrapers(payload: ScraperRequest):
+    try:
+        return service.process(payload.dict())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

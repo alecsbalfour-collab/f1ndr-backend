@@ -1,46 +1,19 @@
-from fastapi import APIRouter
-from typing import Optional
+from fastapi import APIRouter, HTTPException
+from services.insights.insights_service import InsightsService
+from models.insights.insights_model import InsightsRequest
 
 router = APIRouter()
+service = InsightsService()
 
-@router.get("/insights")
-def insights(
-    text: Optional[str] = None,
-    mode: Optional[str] = "summary"
-):
-    if not text:
-        return {"error": "Missing 'text' field"}
-
-    if mode == "summary":
+@router.post("/insights")
+def insights(payload: InsightsRequest):
+    try:
+        result = service.process(payload.dict())
         return {
-            "action": "summary",
-            "input": text,
-            "output": f"Summary: {text[:75]}..."
+            "status": "success",
+            "engine": "insights",
+            "input": payload.dict(),
+            "output": result
         }
-
-    if mode == "keywords":
-        words = text.split()
-        keywords = list({w.lower().strip(",.!?") for w in words if len(w) > 4})
-        return {
-            "action": "keywords",
-            "input": text,
-            "output": keywords
-        }
-
-    if mode == "sentiment":
-        sentiment = "neutral"
-        lowered = text.lower()
-        if any(w in lowered for w in ["love", "great", "awesome", "perfect"]):
-            sentiment = "positive"
-        if any(w in lowered for w in ["hate", "terrible", "bad", "awful"]):
-            sentiment = "negative"
-
-        return {
-            "action": "sentiment",
-            "input": text,
-            "output": sentiment
-        }
-
-    return {
-        "error": "Invalid mode. Use 'summary', 'keywords', or 'sentiment'."
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

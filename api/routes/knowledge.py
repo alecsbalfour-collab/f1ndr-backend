@@ -1,39 +1,27 @@
-from fastapi import APIRouter
-from typing import Optional
+from fastapi import APIRouter, HTTPException
+from services.knowledge.knowledge_service import KnowledgeService
+from models.knowledge.knowledge_model import KnowledgeRequest
 
 router = APIRouter()
+service = KnowledgeService()
 
-@router.get("/knowledge")
-def knowledge(
-    query: Optional[str] = None,
-    mode: Optional[str] = "define"
-):
-    if not query:
-        return {"error": "Missing 'query' field"}
 
-    if mode == "define":
+@router.post("/knowledge")
+def generate_knowledge(payload: KnowledgeRequest):
+    """
+    Generate knowledge inference using the existing KnowledgeService.
+    This wires the route → service → engine → model exactly as your architecture intends.
+    """
+
+    try:
+        result = service.generate_knowledge(payload)
+
         return {
-            "action": "define",
-            "query": query,
-            "output": f"{query}: A general definition placeholder."
+            "status": "success",
+            "engine": "knowledge",
+            "input": payload.dict(),
+            "output": result
         }
 
-    if mode == "facts":
-        words = query.split()
-        facts = [w for w in words if len(w) > 5]
-        return {
-            "action": "facts",
-            "query": query,
-            "output": facts
-        }
-
-    if mode == "explain":
-        return {
-            "action": "explain",
-            "query": query,
-            "output": f"Explanation placeholder for: {query}"
-        }
-
-    return {
-        "error": "Invalid mode. Use 'define', 'facts', or 'explain'."
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,37 +1,25 @@
 from fastapi import APIRouter, HTTPException
 from services.animation.animation_timeline_service import AnimationTimelineService
-from models.animation.animation_timeline_model import build_animation_timeline_contract
+from models.animation.animation_timeline_model import AnimationTimelineRequest
 
 router = APIRouter()
-timeline = AnimationTimelineService()
+service = AnimationTimelineService()
 
-@router.post("/event")
-def add_event(payload: dict):
-    anim = payload.get("animation")
-    dur = payload.get("duration")
-    easing = payload.get("easing", "linear")
 
-    if not anim or dur is None:
-        raise HTTPException(status_code=400, detail="animation and duration required")
+@router.post("/animation/timeline")
+def generate_animation_timeline(payload: AnimationTimelineRequest):
+    """
+    Generate an animation timeline using the existing AnimationTimelineService.
+    This wires the route → service → engine → model exactly as your architecture intends.
+    """
 
-    timeline.add_event(anim, float(dur), easing)
-    return {"added": anim}
-
-@router.post("/clear")
-def clear():
-    timeline.clear()
-    return {"cleared": True}
-
-@router.post("/play")
-def play():
-    timeline.play()
-    return {"playing": True}
-
-@router.post("/stop")
-def stop():
-    timeline.stop()
-    return {"playing": False}
-
-@router.get("/contract")
-def get_contract():
-    return build_animation_timeline_contract(timeline.snapshot())
+    try:
+        result = service.generate_timeline(payload)
+        return {
+            "status": "success",
+            "engine": "animation_timeline",
+            "input": payload.dict(),
+            "output": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,17 +1,27 @@
-from fastapi import APIRouter
-from services.f1ndr_service import F1ndrService
+from fastapi import APIRouter, HTTPException
+from services.dialogue.dialogue_service import DialogueService
+from models.dialogue.dialogue_model import DialogueRequest
 
 router = APIRouter()
-service = F1ndrService()
+service = DialogueService()
+
 
 @router.post("/dialogue")
-def dialogue(payload: dict):
+def generate_dialogue(payload: DialogueRequest):
     """
-    Dialogue route for Findr.
-    Accepts JSON payload: { "data": ... }
+    Generate dialogue using the existing DialogueService.
+    This wires the route → service → engine → model exactly as your architecture intends.
     """
-    return {
-        "action": "dialogue",
-        "input": payload.get("data"),
-        "response": "generated-dialogue"
-    }
+
+    try:
+        result = service.generate_dialogue(payload)
+
+        return {
+            "status": "success",
+            "engine": "dialogue",
+            "input": payload.dict(),
+            "output": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

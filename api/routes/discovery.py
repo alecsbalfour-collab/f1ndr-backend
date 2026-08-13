@@ -1,37 +1,72 @@
-from fastapi import APIRouter
-from typing import Optional
-from discovery.scan import scan
-from discovery.classify import classify
-from discovery.generator import generate
+from fastapi import APIRouter, HTTPException
+
+# Existing discovery engines
+from discovery.scan import ScanEngine
+from discovery.classify import DiscoveryClassifier
+from discovery.generator import DiscoveryGenerator
 
 router = APIRouter()
 
-@router.get("/discover")
-def discover(
-    mode: Optional[str] = "scan",
-    input: Optional[str] = None
-):
-    if mode == "scan":
+scan_engine = ScanEngine()
+classifier = DiscoveryClassifier()
+generator = DiscoveryGenerator()
+
+
+@router.post("/discovery/scan")
+def discovery_scan(payload: dict):
+    """
+    Run a discovery scan using the existing ScanEngine.
+    """
+
+    try:
+        result = scan_engine.scan(payload)
+
         return {
-            "action": "scan",
-            "input": input,
-            "output": scan(input)
+            "status": "success",
+            "engine": "discovery_scan",
+            "input": payload,
+            "output": result
         }
 
-    if mode == "classify":
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/discovery/classify")
+def discovery_classify(payload: dict):
+    """
+    Classify discovery input using the existing DiscoveryClassifier.
+    """
+
+    try:
+        result = classifier.classify(payload)
+
         return {
-            "action": "classify",
-            "input": input,
-            "output": classify(input)
+            "status": "success",
+            "engine": "discovery_classify",
+            "input": payload,
+            "output": result
         }
 
-    if mode == "generate":
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/discovery/generate")
+def discovery_generate(payload: dict):
+    """
+    Generate discovery feed items using the existing DiscoveryGenerator.
+    """
+
+    try:
+        result = generator.generate(payload)
+
         return {
-            "action": "generate",
-            "input": input,
-            "output": generate(input)
+            "status": "success",
+            "engine": "discovery_generate",
+            "input": payload,
+            "output": result
         }
 
-    return {
-        "error": "Invalid mode. Use 'scan', 'classify', or 'generate'."
-    }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,32 +1,13 @@
-from fastapi import APIRouter
-from typing import Optional
+from fastapi import APIRouter, HTTPException
 from services.f1ndr.f1ndr_service import F1ndrService
+from models.f1ndr.f1ndr_model import F1ndrRequest
 
 router = APIRouter()
 service = F1ndrService()
 
-@router.get("/search")
-def search(
-    keywords: Optional[str] = None,
-    category: Optional[str] = None,
-    min_price: Optional[float] = None,
-    max_price: Optional[float] = None,
-    lat: Optional[float] = None,
-    lng: Optional[float] = None,
-    radius_km: Optional[float] = None,
-    sort: Optional[str] = None
-):
-    payload = {
-        "query": {
-            "keywords": keywords,
-            "category": category,
-            "min_price": min_price,
-            "max_price": max_price,
-            "lat": lat,
-            "lng": lng,
-            "radius_km": radius_km,
-            "sort": sort
-        }
-    }
-
-    return service.search(payload)
+@router.post("/f1ndr")
+def f1ndr(payload: F1ndrRequest):
+    try:
+        return service.process(payload.dict())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
