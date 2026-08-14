@@ -8,3 +8,5 @@ loguru
 fastapi[all]
 pymongo
 motor
+fastapi
+uvicorn
