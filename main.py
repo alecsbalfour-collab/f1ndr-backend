@@ -1,44 +1,31 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List, Optional
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from routes.listings import router as listings_router
+from routes.search import router as search_router
+from routes.health import router as health_router
+from routes.platforms import router as platforms_router
+from routes.filters import router as filters_router
+from routes.status import router as status_router
 
-# -----------------------------
-# MODELS
-# -----------------------------
-class Listing(BaseModel):
-    title: str
-    price: float
-    platform: str
-    url: str
-    posted: str
-    location: str
-    condition: str
-    distance_km: Optional[float] = None
-    deal_score: int
+app = FastAPI(
+    title="F1ndr Backend",
+    version="1.0.0",
+    description="Enterprise backend powering F1ndr multi-platform search."
+)
 
-class ListingsResponse(BaseModel):
-    count: int
-    results: List[Listing]
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# -----------------------------
-# ENDPOINTS
-# -----------------------------
-@app.post("/listings", response_model=ListingsResponse)
-async def listings():
-    return ListingsResponse(
-        count=1,
-        results=[
-            Listing(
-                title="Test Item",
-                price=100,
-                platform="Kijiji",
-                url="https://example.com",
-                posted="today",
-                location="Calgary",
-                condition="good",
-                deal_score=90
-            )
-        ]
-    )
+# ROUTERS
+app.include_router(listings_router)
+app.include_router(search_router)
+app.include_router(health_router)
+app.include_router(platforms_router)
+app.include_router(filters_router)
+app.include_router(status_router)
