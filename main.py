@@ -1,3 +1,8 @@
+from fastapi import FastAPI
+from models.listings_model import ListingsResponse
+
+app = FastAPI()
+
 @app.post("/listings", response_model=ListingsResponse)
 async def listings():
     return {
