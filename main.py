@@ -1,14 +1,49 @@
 from fastapi import FastAPI
-from api.routes.search import router as search_router
-from api.routes.listings import router as listings_router
-from api.routes.scrapers import router as scrapers_router
-from api.routes.platforms import router as platforms_router
-from api.routes.f1ndr import router as f1ndr_router
+from pydantic import BaseModel
+from typing import List, Optional
 
-app = FastAPI(title="F1NDR Backend")
+app = FastAPI()
 
-app.include_router(search_router)
-app.include_router(listings_router)
-app.include_router(scrapers_router)
-app.include_router(platforms_router)
-app.include_router(f1ndr_router)
+# -----------------------------
+# MODELS
+# -----------------------------
+
+class Listing(BaseModel):
+    title: str
+    price: float
+    platform: str
+    url: str
+    posted: str
+    location: str
+    condition: str
+    distance_km: Optional[float] = None
+    deal_score: int
+
+class ListingsResponse(BaseModel):
+    count: int
+    results: List[Listing]
+
+
+# -----------------------------
+# ENDPOINTS
+# -----------------------------
+
+@app.post("/listings", response_model=ListingsResponse)
+async def listings():
+    # Replace this with your real scraper logic later
+    return {
+        "count": 1,
+        "results": [
+            {
+                "title": "",
+                "price": 0,
+                "platform": "",
+                "url": "",
+                "posted": "",
+                "location": "",
+                "condition": "unknown",
+                "distance_km": None,
+                "deal_score": 75
+            }
+        ]
+    }
