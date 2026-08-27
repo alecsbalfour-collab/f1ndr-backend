@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes.listings import router as listings_router
-from routes.search import router as search_router
-from routes.health import router as health_router
-from routes.platforms import router as platforms_router
-from routes.filters import router as filters_router
-from routes.status import router as status_router
+# ROUTERS (correct path: api/routes/)
+from api.routes.listings import router as listings_router
+from api.routes.search import router as search_router
+from api.routes.health import router as health_router
+from api.routes.platforms import router as platforms_router
+from api.routes.filters import router as filters_router
+from api.routes.status import router as status_router
 
 app = FastAPI(
     title="F1ndr Backend",
@@ -22,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ROUTERS
+# INCLUDE ALL ROUTERS
 app.include_router(listings_router)
 app.include_router(search_router)
 app.include_router(health_router)

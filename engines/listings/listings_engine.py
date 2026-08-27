@@ -1,72 +1,79 @@
 class ListingsEngine:
-    def normalize(self, item):
-        return {
-            "title": item.get("title", "").strip(),
-            "price": float(item.get("price", 0)),
-            "platform": item.get("platform", ""),
-            "url": item.get("url", ""),
-            "posted": item.get("posted", ""),
-            "location": item.get("location", ""),
-            "condition": item.get("condition", "unknown"),
-            "distance_km": item.get("distance_km", None)
+    def __init__(self):
+        self.state = {
+            "listings": [],
+            "filters": {},
+            "results": [],
+            "log": []
         }
 
-    def dedupe(self, items):
-        seen = set()
-        unique = []
-        for item in items:
-            key = (item["title"], item["price"], item["platform"])
-            if key not in seen:
-                seen.add(key)
-                unique.append(item)
-        return unique
+    def add_listing(self, listing: dict):
+        self.state["listings"].append(listing)
+        self.state["log"].append(f"Added listing: {listing.get('title', 'unknown')}")
 
-    def distance_score(self, km):
-        if km is None:
-            return 0
-        if km < 5: return 20
-        if km < 10: return 15
-        if km < 20: return 10
-        if km < 40: return 5
-        return 0
+    def apply_filters(self, filters: dict):
+        self.state["filters"] = filters
+        self.state["log"].append(f"Applied filters: {filters}")
 
-    def score(self, item):
-        price = item["price"]
-        condition = item["condition"].lower()
-        title = item["title"].lower()
-        km = item.get("distance_km", None)
+        results = self.state["listings"]
 
-        score = 50
+        # Filter: platform
+        if "platform" in filters:
+            results = [
+                l for l in results
+                if l.get("platform", "").lower() == filters["platform"].lower()
+            ]
 
-        if price < 150: score += 25
-        elif price < 300: score += 15
-        elif price < 500: score += 10
-        else: score += 5
+        # Filter: min_price
+        if "min_price" in filters:
+            results = [
+                l for l in results
+                if l.get("price", 0) >= filters["min_price"]
+            ]
 
-        if "new" in condition: score += 15
-        if "like new" in condition: score += 10
-        if "used" in condition: score += 5
+        # Filter: max_price
+        if "max_price" in filters:
+            results = [
+                l for l in results
+                if l.get("price", 0) <= filters["max_price"]
+            ]
 
-        keywords = ["rare", "mint", "upgraded", "custom"]
-        for k in keywords:
-            if k in title:
-                score += 5
+        # Filter: condition
+        if "condition" in filters:
+            results = [
+                l for l in results
+                if l.get("condition", "").lower() == filters["condition"].lower()
+            ]
 
-        score += self.distance_score(km)
+        self.state["results"] = results
+        self.state["log"].append(f"Filtered down to {len(results)} listings")
 
-        return score
+    def score_listings(self):
+        """
+        Simple enterprise-style scoring logic.
+        You can expand this later without changing structure.
+        """
+        scored = []
 
-    def run(self, payload):
-        raw_items = payload.get("items", [])
-        normalized = [self.normalize(i) for i in raw_items]
-        deduped = self.dedupe(normalized)
+        for listing in self.state["results"]:
+            price = listing.get("price", 0)
+            condition = listing.get("condition", "unknown")
 
-        for item in deduped:
-            item["deal_score"] = self.score(item)
+            # Basic scoring logic
+            score = 100
 
-        sorted_items = sorted(deduped, key=lambda x: x["deal_score"], reverse=True)
+            if price > 1000:
+                score -= 20
+            if condition.lower() == "poor":
+                score -= 30
+            if condition.lower() == "excellent":
+                score += 10
 
-        return {
-            "count": len(sorted_items),
-            "results": sorted_items
-        }
+            listing["score"] = score
+            scored.append(listing)
+
+        self.state["results"] = scored
+        self.state["log"].append("Scored listings")
+
+    def snapshot(self):
+        return self.state

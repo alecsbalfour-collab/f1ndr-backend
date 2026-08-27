@@ -1,13 +1,20 @@
-from fastapi import APIRouter, HTTPException
-from services.listings.listings_service import ListingsService
+from fastapi import APIRouter
 from models.listings.listings_model import ListingsRequest
+from services.listings.listings_service import ListingsService
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/listings",
+    tags=["listings"]
+)
+
 service = ListingsService()
 
-@router.post("/listings")
-def listings(payload: ListingsRequest):
-    try:
-        return service.process(payload.dict())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/process")
+async def process_listings(payload: ListingsRequest):
+    """
+    Enterprise listings endpoint.
+    Accepts a ListingsRequest model,
+    passes it to the ListingsService,
+    which delegates to ListingsEngine.
+    """
+    return service.process(payload)
