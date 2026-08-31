@@ -2,15 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "FastAPI Debug",
+            "name": "Debug f1ndr",
             "type": "python",
             "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "main:app",
-                "--reload"
-            ],
-            "cwd": "D:/f1ndr/DEV/project-backend"
+            "program": "${workspaceFolder}/test_f1ndr.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
         }
     ]
 }

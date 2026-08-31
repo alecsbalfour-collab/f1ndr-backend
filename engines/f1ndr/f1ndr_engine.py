@@ -1,39 +1,54 @@
-from engines.search.search_engine import SearchEngine
-from engines.platforms.platforms_engine import PlatformsEngine
-from engines.scrapers.scrapers_engine import ScrapersEngine
-from engines.listings.listings_engine import ListingsEngine
+from engines.f1ndr.search_engine import SearchEngine
+from engines.f1ndr.platforms_engine import PlatformsEngine
+from engines.f1ndr.scrapers_engine import ScrapersEngine
+from engines.f1ndr.normalize_engine import NormalizeEngine
+from engines.f1ndr.dedupe_engine import DedupeEngine
+from engines.f1ndr.enrich_engine import EnrichEngine
+from engines.f1ndr.listings_engine import ListingsEngine
+from engines.f1ndr.index_engine import IndexEngine
+
 
 class F1ndrEngine:
     def __init__(self):
         self.search = SearchEngine()
         self.platforms = PlatformsEngine()
         self.scrapers = ScrapersEngine()
+        self.normalize = NormalizeEngine()
+        self.dedupe = DedupeEngine()
+        self.enrich = EnrichEngine()
         self.listings = ListingsEngine()
+        self.index = IndexEngine()
 
-    def run(self, payload):
-        search_result = self.search.run({"query": payload.get("query", "")})
-        category = search_result["category"]
-        platforms = search_result["platforms"]
+    def run(self, query: str):
+        # 1. classify query
+        category = self.search.classify(query)
 
-        enabled_platforms = self.platforms.get_enabled()
-        category_platforms = self.platforms.filter_by_category(category)
+        # 2. choose platforms
+        platforms = self.platforms.get_platforms(category)
 
-        final_platforms = [
-            p for p in platforms
-            if p in enabled_platforms and p in category_platforms
-        ]
+        # 3. scrape raw listings
+        raw_results = self.scrapers.run_scrapers(platforms, query)
 
-        scraped = self.scrapers.run({
-            "query": search_result["query"],
-            "platforms": final_platforms
-        })
+        # 4. normalize
+        normalized = [self.normalize.normalize(item) for item in raw_results]
 
-        aggregated = self.listings.run({"items": scraped["results"]})
+        # 5. dedupe
+        deduped = self.dedupe.dedupe(normalized)
+
+        # 6. enrich
+        enriched = [self.enrich.enrich(item) for item in deduped]
+
+        # 7. format listings
+        formatted = [self.listings.format(item) for item in enriched]
+
+        # 8. index
+        for item in formatted:
+            self.index.push(item)
 
         return {
-            "query": search_result["query"],
+            "query": query,
             "category": category,
-            "platforms_used": final_platforms,
-            "total_results": aggregated["count"],
-            "results": aggregated["results"]
+            "platforms_used": platforms,
+            "total_results": len(formatted),
+            "results": formatted
         }

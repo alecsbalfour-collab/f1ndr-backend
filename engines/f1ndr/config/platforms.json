@@ -1,0 +1,10 @@
+{
+  "platforms": [
+    "kijiji",
+    "facebook",
+    "marketplace",
+    "ebay",
+    "autotrader",
+    "adoptapet"
+  ]
+}

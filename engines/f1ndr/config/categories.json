@@ -1,0 +1,8 @@
+{
+  "categories": {
+    "bikes": ["bike", "bicycle", "mtb", "mountain bike"],
+    "vehicles": ["car", "truck", "suv", "van", "vehicle"],
+    "pets": ["dog", "cat", "puppy", "kitten", "pet"],
+    "general": []
+  }
+}

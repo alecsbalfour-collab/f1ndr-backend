@@ -1,41 +1,39 @@
 class PlatformsEngine:
     def __init__(self):
-        self.registry = {
-            "kijiji": {
-                "enabled": True,
-                "adapter": "kijiji",
-                "categories": ["bicycles", "vehicles", "electronics"]
-            },
-            "craigslist": {
-                "enabled": True,
-                "adapter": "craigslist",
-                "categories": ["bicycles", "vehicles"]
-            },
-            "facebook": {
-                "enabled": False,
-                "adapter": "facebook",
-                "categories": ["bicycles", "vehicles"]
-            }
+        self.state = {
+            "input": None,
+            "platforms": [],
+            "results": [],
+            "log": []
         }
 
-    def get_enabled(self):
-        return [name for name, data in self.registry.items() if data["enabled"]]
+    def run(self, payload: dict):
+        # Store input
+        self.state["input"] = payload
+        self.state["log"].append("Platforms payload received")
 
-    def get_platform(self, name):
-        return self.registry.get(name, None)
+        # Determine platforms to process
+        platforms = payload.get("platforms", ["kijiji", "facebook", "craigslist"])
+        self.state["platforms"] = platforms
+        self.state["log"].append(f"Platforms selected: {platforms}")
 
-    def filter_by_category(self, category):
-        return [
-            name for name, data in self.registry.items()
-            if category in data["categories"] and data["enabled"]
-        ]
+        # Real processing structure (replace with actual platform logic later)
+        processed_results = []
+        for platform in platforms:
+            processed_results.append({
+                "platform": platform,
+                "status": "ready",
+                "handler": f"{platform}_handler",
+                "meta": {
+                    "supports_search": True,
+                    "supports_scrape": True
+                }
+            })
 
-    def run(self, payload):
-        category = payload.get("category", "")
-        enabled = self.get_enabled()
-        filtered = self.filter_by_category(category)
+        self.state["results"] = processed_results
+        self.state["log"].append("Platform processing completed")
 
-        return {
-            "enabled_platforms": enabled,
-            "category_platforms": filtered
-        }
+        return self.snapshot()
+
+    def snapshot(self):
+        return self.state

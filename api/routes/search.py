@@ -1,13 +1,27 @@
-from fastapi import APIRouter, HTTPException
-from services.search.search_service import SearchService
-from models.search.search_model import SearchRequest
+from fastapi import APIRouter
+from engines.search_engine import SearchEngine
 
-router = APIRouter()
-service = SearchService()
+router = APIRouter(
+    prefix="/search",
+    tags=["search"]
+)
 
-@router.post("/search")
-def search(payload: SearchRequest):
-    try:
-        return service.process(payload.dict())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+engine = SearchEngine()
+
+
+@router.post("/query")
+async def set_query(payload: dict):
+    engine.set_query(payload.get("query", ""))
+    return engine.snapshot()
+
+
+@router.post("/filters")
+async def apply_filters(payload: dict):
+    engine.apply_filters(payload)
+    return engine.snapshot()
+
+
+@router.get("/run")
+async def run_search():
+    engine.run_search()
+    return engine.snapshot()

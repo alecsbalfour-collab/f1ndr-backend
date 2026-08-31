@@ -1,0 +1,6 @@
+{
+  "neutral": { "intensity": 0.5, "tone": "steady" },
+  "happy":   { "intensity": 0.9, "tone": "bright" },
+  "sad":     { "intensity": 0.3, "tone": "soft" },
+  "angry":   { "intensity": 1.0, "tone": "sharp" }
+}

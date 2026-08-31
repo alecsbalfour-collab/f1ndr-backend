@@ -1,5 +1,5 @@
 from engines.registry.character_registry import CharacterRegistry
-from services.trinn_controller import TrinnController
+from trinn.trinn_controller import TrinnController
 
 class RegistryService:
     def __init__(self):

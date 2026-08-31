@@ -1,20 +1,22 @@
 from fastapi import APIRouter
-from models.listings.listings_model import ListingsRequest
-from services.listings.listings_service import ListingsService
+from engines.listings_engine import ListingsEngine
 
 router = APIRouter(
     prefix="/listings",
     tags=["listings"]
 )
 
-service = ListingsService()
+engine = ListingsEngine()
 
-@router.post("/process")
-async def process_listings(payload: ListingsRequest):
-    """
-    Enterprise listings endpoint.
-    Accepts a ListingsRequest model,
-    passes it to the ListingsService,
-    which delegates to ListingsEngine.
-    """
-    return service.process(payload)
+
+@router.post("/add")
+async def add_listing(listing: dict):
+    engine.add_listing(listing)
+    return engine.snapshot()
+
+
+@router.post("/filter")
+async def filter_listings(filters: dict):
+    engine.apply_filters(filters)
+    engine.score_listings()
+    return engine.snapshot()

@@ -1,13 +1,27 @@
-from fastapi import APIRouter, HTTPException
-from services.scrapers.scrapers_service import ScrapersService
-from models.scrapers.scrapers_model import ScraperRequest
+from fastapi import APIRouter
+from engines.scrapers_engine import ScrapersEngine
 
-router = APIRouter()
-service = ScrapersService()
+router = APIRouter(
+    prefix="/scrapers",
+    tags=["scrapers"]
+)
 
-@router.post("/scrapers")
-def scrapers(payload: ScraperRequest):
-    try:
-        return service.process(payload.dict())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+engine = ScrapersEngine()
+
+
+@router.post("/platform")
+async def set_platform(payload: dict):
+    engine.set_platform(payload.get("platform", ""))
+    return engine.snapshot()
+
+
+@router.post("/query")
+async def set_query(payload: dict):
+    engine.set_query(payload.get("query", ""))
+    return engine.snapshot()
+
+
+@router.get("/run")
+async def run_scraper():
+    engine.run()
+    return engine.snapshot()

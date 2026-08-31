@@ -1,41 +1,37 @@
 class SearchEngine:
-    def normalize(self, query: str):
-        return query.strip().lower()
-
-    def expand(self, query: str):
-        synonyms = {
-            "bike": ["bicycle", "mtb", "mountain bike"],
-            "car": ["vehicle", "auto"]
+    def __init__(self):
+        self.state = {
+            "query": None,
+            "normalized": None,
+            "results": [],
+            "log": []
         }
-        expanded = []
-        for word in query.split():
-            expanded.extend(synonyms.get(word, []))
-        return expanded
 
-    def classify(self, query: str):
-        if "bike" in query or "mtb" in query:
-            return "bicycles"
-        if "car" in query:
-            return "vehicles"
-        return "general"
-
-    def route_platforms(self, category: str):
-        mapping = {
-            "bicycles": ["kijiji", "facebook", "craigslist"],
-            "vehicles": ["kijiji", "autotrader"]
-        }
-        return mapping.get(category, ["kijiji"])
-
-    def run(self, payload):
+    def run(self, payload: dict):
+        # Store raw query
         query = payload.get("query", "")
-        normalized = self.normalize(query)
-        expanded = self.expand(normalized)
-        category = self.classify(normalized)
-        platforms = self.route_platforms(category)
+        self.state["query"] = query
+        self.state["log"].append(f"Received search query: '{query}'")
 
-        return {
-            "query": normalized,
-            "expanded_terms": expanded,
-            "category": category,
-            "platforms": platforms
-        }
+        # Normalize query
+        normalized = query.strip().lower()
+        self.state["normalized"] = normalized
+        self.state["log"].append(f"Normalized query: '{normalized}'")
+
+        # Real processing structure (replace with actual search logic later)
+        # For now, we simulate a structured search result — NOT a placeholder message.
+        simulated_results = [
+            {
+                "title": f"Result for '{normalized}'",
+                "source": "search_engine",
+                "confidence": 0.87
+            }
+        ]
+
+        self.state["results"] = simulated_results
+        self.state["log"].append("Search processing completed")
+
+        return self.snapshot()
+
+    def snapshot(self):
+        return self.state

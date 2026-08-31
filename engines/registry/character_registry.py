@@ -1,21 +1,32 @@
-class CharacterRegistry:
+class CharacterRegistryEngine:
     def __init__(self):
-        self.characters = {}
+        self.state = {
+            "characters": {},
+            "log": []
+        }
 
-    def register(self, name: str, controller):
-        self.characters[name] = controller
+    def register_character(self, char_id: str, data: dict):
+        self.state["characters"][char_id] = data
+        self.state["log"].append(f"Registered character '{char_id}'")
 
-    def unregister(self, name: str):
-        if name in self.characters:
-            del self.characters[name]
+    def update_character(self, char_id: str, data: dict):
+        if char_id not in self.state["characters"]:
+            self.state["log"].append(f"Attempted update on unknown character '{char_id}'")
+            return
 
-    def get(self, name: str):
-        return self.characters.get(name)
+        self.state["characters"][char_id].update(data)
+        self.state["log"].append(f"Updated character '{char_id}' with {data}")
 
-    def list(self):
-        return list(self.characters.keys())
+    def remove_character(self, char_id: str):
+        if char_id not in self.state["characters"]:
+            self.state["log"].append(f"Attempted removal of unknown character '{char_id}'")
+            return
+
+        del self.state["characters"][char_id]
+        self.state["log"].append(f"Removed character '{char_id}'")
+
+    def get_character(self, char_id: str):
+        return self.state["characters"].get(char_id, None)
 
     def snapshot(self):
-        return {
-            "characters": self.list()
-        }
+        return self.state

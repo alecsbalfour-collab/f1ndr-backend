@@ -17,28 +17,24 @@ class ListingsEngine:
 
         results = self.state["listings"]
 
-        # Filter: platform
         if "platform" in filters:
             results = [
                 l for l in results
                 if l.get("platform", "").lower() == filters["platform"].lower()
             ]
 
-        # Filter: min_price
         if "min_price" in filters:
             results = [
                 l for l in results
                 if l.get("price", 0) >= filters["min_price"]
             ]
 
-        # Filter: max_price
         if "max_price" in filters:
             results = [
                 l for l in results
                 if l.get("price", 0) <= filters["max_price"]
             ]
 
-        # Filter: condition
         if "condition" in filters:
             results = [
                 l for l in results
@@ -49,17 +45,12 @@ class ListingsEngine:
         self.state["log"].append(f"Filtered down to {len(results)} listings")
 
     def score_listings(self):
-        """
-        Simple enterprise-style scoring logic.
-        You can expand this later without changing structure.
-        """
         scored = []
 
         for listing in self.state["results"]:
             price = listing.get("price", 0)
             condition = listing.get("condition", "unknown")
 
-            # Basic scoring logic
             score = 100
 
             if price > 1000:

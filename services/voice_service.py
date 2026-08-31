@@ -1,10 +1,14 @@
-class VoiceService:
-    def generate(self, text: str):
-        if not text:
-            return {"error": "Missing text"}
+from engines.f1ndr_engine import F1ndrEngine
 
-        return {
-            "engine": "global-voice",
-            "input": text,
-            "output": f"voice-output-for: {text}"
-        }
+class VoiceService:
+    def __init__(self):
+        # Attach the main engine
+        self.engine = F1ndrEngine()
+
+    def process(self, payload):
+        """
+        Global voice wrapper.
+        No logic here — simply forwards the query to F1ndrEngine.
+        """
+        query = payload.get("query", "")
+        return self.engine.run({"query": query})

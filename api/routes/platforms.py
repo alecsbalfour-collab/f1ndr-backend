@@ -1,13 +1,33 @@
-from fastapi import APIRouter, HTTPException
-from services.platforms.platforms_service import PlatformsService
-from models.platforms.platforms_model import PlatformsRequest
+from fastapi import APIRouter
+from engines.platforms_engine import PlatformsEngine
 
-router = APIRouter()
-service = PlatformsService()
+router = APIRouter(
+    prefix="/platforms",
+    tags=["platforms"]
+)
 
-@router.post("/platforms")
-def platforms(payload: PlatformsRequest):
-    try:
-        return service.process(payload.dict())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+engine = PlatformsEngine()
+
+
+@router.post("/register")
+async def register_platform(payload: dict):
+    engine.register_platform(
+        payload.get("name", ""),
+        payload.get("metadata", {})
+    )
+    return engine.snapshot()
+
+
+@router.post("/select")
+async def select_platform(payload: dict):
+    engine.select_platform(payload.get("name", ""))
+    return engine.snapshot()
+
+
+@router.post("/metadata")
+async def update_metadata(payload: dict):
+    engine.update_metadata(
+        payload.get("name", ""),
+        payload.get("metadata", {})
+    )
+    return engine.snapshot()
