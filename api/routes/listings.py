@@ -1,22 +1,13 @@
 from fastapi import APIRouter
-from engines.listings_engine import ListingsEngine
+from api.models.listing_create import ListingCreate
+from services.f1ndr.f1ndr_service import F1ndrService
 
-router = APIRouter(
-    prefix="/listings",
-    tags=["listings"]
-)
+router = APIRouter()
 
-engine = ListingsEngine()
+@router.post("/create")
+async def create_listing(data: ListingCreate):
+    return F1ndrService().create_listing(data)
 
-
-@router.post("/add")
-async def add_listing(listing: dict):
-    engine.add_listing(listing)
-    return engine.snapshot()
-
-
-@router.post("/filter")
-async def filter_listings(filters: dict):
-    engine.apply_filters(filters)
-    engine.score_listings()
-    return engine.snapshot()
+@router.post("/push")
+async def push_listing(data: ListingCreate):
+    return F1ndrService().push_listing(data)

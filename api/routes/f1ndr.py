@@ -1,13 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from api.models.search_request import SearchRequest
 from services.f1ndr.f1ndr_service import F1ndrService
-from models.f1ndr.f1ndr_model import F1ndrRequest
 
 router = APIRouter()
-service = F1ndrService()
 
-@router.post("/f1ndr")
-def f1ndr(payload: F1ndrRequest):
-    try:
-        return service.process(payload.dict())
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/search")
+async def search(request: SearchRequest):
+    return F1ndrService().search(request.query, request.platforms)
+
+@router.get("/test")
+async def test():
+    return {"message": "f1ndr route working"}

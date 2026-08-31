@@ -1,10 +1,14 @@
 from engines.f1ndr.f1ndr_engine import F1ndrEngine
 
-
 class F1ndrService:
     def __init__(self):
         self.engine = F1ndrEngine()
 
-    def run(self, payload):
-        # Non-logic: just pass through
-        return self.engine.run(payload)
+    def search(self, query: str, platforms: list[str] | None):
+        return self.engine.search(query, platforms)
+
+    def create_listing(self, data):
+        return {"status": "created", "data": data}
+
+    def push_listing(self, data):
+        return {"status": "pushed", "platforms": ["kijiji", "facebook", "autotrader"]}
