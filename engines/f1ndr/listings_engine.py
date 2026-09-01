@@ -1,10 +1,10 @@
-class ListingsEngine:
-    def format(self, listing: dict):
-        return {
-            "id": listing["id"],
-            "title": listing["title"],
-            "price": listing["price"],
-            "location": listing["location"],
-            "tags": listing.get("tags", []),
-            "url": listing["url"]
-        }
+
+
+class ListingsEngine(EngineInterface):
+    """
+    Handles listing creation, editing, posting.
+    Placeholder until real logic is added.
+    """
+
+    def run(self, state):
+        return {"status": "ok"}

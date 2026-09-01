@@ -1,17 +1,12 @@
 class DedupeEngine:
-    def dedupe(self, listings: list):
+    def run(self, listings):
         seen = set()
-        unique = []
+        deduped = []
 
         for item in listings:
-            key = (
-                item.get("title", "").lower(),
-                item.get("price"),
-                item.get("location", "").lower()
-            )
-
+            key = (item["title"].lower(), item["price"])
             if key not in seen:
                 seen.add(key)
-                unique.append(item)
+                deduped.append(item)
 
-        return unique
+        return deduped

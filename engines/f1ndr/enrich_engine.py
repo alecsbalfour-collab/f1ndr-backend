@@ -1,27 +1,28 @@
+
+from core.utils.logger import logger
+
 class EnrichEngine:
-    def enrich(self, listing: dict):
-        return {
-            **listing,
-            "tags": self.generate_tags(listing),
-            "fair_price": self.estimate_price(listing)
-        }
 
-    def generate_tags(self, listing: dict):
-        tags = []
-        title = listing.get("title", "").lower()
-        desc = listing.get("description", "").lower()
+    """
+    Fourth pipeline step:
+    - Adds metadata (tags, score, etc.)
+    """
 
-        if "bike" in title or "bike" in desc:
-            tags.append("bike")
-        if "truck" in title:
-            tags.append("vehicle")
-        if "pet" in desc:
-            tags.append("pet")
+    def run(self, state):
+        logger.info("[ENRICH] Enriching listings")
 
-        return tags
+        enriched = []
+        for item in state.deduped:
+            item["score"] = self.compute_score(item)
+            enriched.append(item)
 
-    def estimate_price(self, listing: dict):
-        price = listing.get("price")
-        if price is None:
-            return "unknown"
-        return "fair"
+        state.enriched = enriched
+        return enriched
+
+    def compute_score(self, item):
+        score = 0
+        if item["price"] > 0:
+            score += 1
+        if item["title"]:
+            score += 1
+        return score

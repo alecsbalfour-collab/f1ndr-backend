@@ -1,18 +1,14 @@
+from scrapers.scraper_manager import ScraperManager
+
 class ScrapersEngine:
-    def run_scrapers(self, platforms: list, query: str):
+    def __init__(self):
+        self.manager = ScraperManager()
+
+    def run(self, query: str, platforms: list[str]):
         results = []
-
-        for platform in platforms:
-            results.append({
-                "id": f"{platform}-123",
-                "title": f"{query} listing from {platform}",
-                "price": 100,
-                "location": "Calgary",
-                "description": f"Sample {query} listing from {platform}",
-                "images": [],
-                "platform": platform,
-                "url": f"https://{platform}.com/listing/123",
-                "posted": "2026-08-31"
-            })
-
+        for p in platforms:
+            try:
+                results.extend(self.manager.run(query, p))
+            except Exception:
+                continue
         return results

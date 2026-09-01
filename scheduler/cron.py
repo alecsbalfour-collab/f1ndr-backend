@@ -1,11 +1,11 @@
 from scrapers import (
-    kijiji,
-    autotrader,
+    autotrader_scraper,
+    ebay_scraper,
+    kijiji_scraper,
+    realtor_scraper,
     rentfaster,
-    used_ca,
-    realtor,
-    zillow,
-    ebay,
+    usedca_scraper,
+    zillow_scraper,
 )
 from db.mongo import get_listings_collection
 from db.platforms import mark_success, mark_failure
@@ -21,13 +21,13 @@ def run_all():
     col = get_listings_collection()
 
     platforms = [
-        ("kijiji", kijiji.scrape),
-        ("autotrader", autotrader.scrape),
+        ("kijiji", kijiji_scraper.scrape),
+        ("autotrader", autotrader_scraper.scrape),
         ("rentfaster", rentfaster.scrape),
-        ("used_ca", used_ca.scrape),
-        ("realtor", realtor.scrape),
-        ("zillow", zillow.scrape),
-        ("ebay", ebay.scrape),
+        ("used_ca", usedca_scraper.scrape),
+        ("realtor", realtor_scraper.scrape),
+        ("zillow", zillow_scraper.scrape),
+        ("ebay", ebay_scraper.scrape),
     ]
 
     for platform_name, scraper_fn in platforms:

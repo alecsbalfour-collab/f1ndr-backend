@@ -1,0 +1,15 @@
+class F1ndrError(Exception):
+    """Base exception for f1ndr."""
+    pass
+
+class ScraperError(F1ndrError):
+    """Raised when a scraper fails."""
+    pass
+
+class PipelineError(F1ndrError):
+    """Raised when a pipeline step fails."""
+    pass
+
+class ValidationError(F1ndrError):
+    """Raised when input validation fails."""
+    pass

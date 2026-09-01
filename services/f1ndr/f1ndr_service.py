@@ -1,14 +1,24 @@
-from engines.f1ndr.f1ndr_engine import F1ndrEngine
+from engines.f1ndr.f1ndr import f1ndr
 
 class F1ndrService:
-    def __init__(self):
-        self.engine = F1ndrEngine()
+    """
+    High-level service that exposes the f1ndr engine pipeline.
+    """
 
     def search(self, query: str, platforms: list[str] | None):
-        return self.engine.search(query, platforms)
+        return f1ndr.search(query, platforms)
 
     def create_listing(self, data):
-        return {"status": "created", "data": data}
+        # Placeholder until listing creation logic is added
+        return {
+            "status": "created",
+            "id": "listing_123",
+            "data": data.dict()
+        }
 
     def push_listing(self, data):
-        return {"status": "pushed", "platforms": ["kijiji", "facebook", "autotrader"]}
+        # Placeholder until platform posting logic is added
+        return {
+            "status": "pushed",
+            "platforms": ["kijiji", "facebook"]
+        }
