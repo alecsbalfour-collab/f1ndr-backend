@@ -1,6 +1,6 @@
 from engines.f1ndr.f1ndr import f1ndr
 
-class f1ndrService:
+class f1ndrservice:
     """
     High-level service that exposes the f1ndr engine pipeline.
     """
