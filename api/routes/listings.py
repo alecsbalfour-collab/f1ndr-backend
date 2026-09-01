@@ -6,6 +6,15 @@ from services.f1ndr.f1ndr_service import F1ndrService
 
 router = APIRouter()
 
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/test")
+def test_listing():
+    return {"message": "listing router working"}
+
+
 @router.post("/create", response_model=ListingCreateResponse)
 async def create_listing(data: ListingCreate):
     result = F1ndrService().create_listing(data)

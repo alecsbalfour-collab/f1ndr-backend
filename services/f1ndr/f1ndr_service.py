@@ -5,13 +5,8 @@ class F1ndrService:
         self.engine = F1ndrEngine()
 
     def search(self, query: str, platforms: list[str] | None):
-        return self.engine.search(query, platforms)
-
-    def create_listing(self, data):
-        return self.engine.create_listing(data)
-
-    def get_listings(self):
-        return self.engine.get_listings()
-
-    def clear_listings(self):
-        return self.engine.clear_listings()
+        payload = {
+            "query": query,
+            "platforms": platforms
+        }
+        return self.engine.run(payload)
