@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-from api.search_route import router as search_router
-from api.listings_route import router as listings_router
+from api.routes.f1ndr_routes import router as f1ndr_router
 
-app = FastAPI(title="F1ndr API")
+app = FastAPI()
 
-app.include_router(search_router, prefix="/search")
-app.include_router(listings_router, prefix="/listings")
+app.include_router(f1ndr_router)
