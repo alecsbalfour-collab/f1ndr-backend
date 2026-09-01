@@ -1,4 +1,5 @@
-from engines.f1ndr.f1ndr import f1ndr
+from engines.f1ndr.f1ndr_engine import F1ndrEngine
+
 
 class f1ndrservice:
     """
