@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  mongo_main:
+    image: mongo:latest
+    container_name: mongo_main
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo_main_data:/data/db
+
+  mongo_scraper:
+    image: mongo:latest
+    container_name: mongo_scraper
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo_scraper_data:/data/db
+
+volumes:
+  mongo_main_data:
+  mongo_scraper_data:
+

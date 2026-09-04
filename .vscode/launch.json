@@ -2,14 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug F1ndr Backend",
-      "type": "debugpy",
+      "name": "Debug f1ndr Backend",
+      "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/run.py",
+      "program": "${workspaceFolder}/run_backend.py",
+      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}"
-      }
+        "ENV": "dev"
+      },
+      "justMyCode": true
     }
   ]
 }

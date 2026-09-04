@@ -1,0 +1,7 @@
+[
+  { "name": "vehicles", "weight": 1.4 },
+  { "name": "rentals", "weight": 1.2 },
+  { "name": "electronics", "weight": 1.1 },
+  { "name": "furniture", "weight": 0.9 },
+  { "name": "fashion", "weight": 0.8 }
+]

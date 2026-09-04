@@ -1,8 +1,0 @@
-{
-  "character": "trinn_character.json",
-  "emotion_map": "trinn_emotion_map.json",
-  "behavior": "trinn_behavior.json",
-  "voice": "trinn_voice.json",
-  "animation": "trinn_animation.json",
-  "personality": "trinn_personality.json"
-}

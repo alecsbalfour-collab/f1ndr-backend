@@ -1,8 +1,0 @@
-from core.utils.logger import logger
-
-class PipelineEvents:
-    def before_step(self, step: str, state):
-        logger.info(f"[PIPELINE] Starting step: {step}")
-
-    def after_step(self, step: str, state):
-        logger.info(f"[PIPELINE] Finished step: {step}")

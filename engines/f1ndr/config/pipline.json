@@ -1,9 +1,0 @@
-{
-  "pipeline": {
-    "normalize": true,
-    "dedupe": true,
-    "enrich": true,
-    "format": true,
-    "index": true
-  }
-}
