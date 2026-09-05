@@ -1,40 +1,30 @@
 import os
-import sys
-import time
-import traceback
+import uvicorn
+from fastapi import FastAPI
 
-print(">>> RUNNING FILE:", __file__)
+# Import your backend modules
+from f1ndr_backend.api.config.cors_config import apply_cors
+from f1ndr_backend.api.config.logging_config import setup_logging
+from f1ndr_backend.api.config.settings_config import get_settings
+from f1ndr_backend.api.app_lifecycles import register_lifecycle_events
 
-BACKEND_ROOT = os.path.dirname(os.path.abspath(__file__))
-if BACKEND_ROOT not in sys.path:
-    sys.path.insert(0, BACKEND_ROOT)
+def create_app() -> FastAPI:
+    settings = get_settings()
+    setup_logging(settings)
 
-from module import f1ndr_backend
+    app = FastAPI(title="F1NDR Backend API")
 
+    apply_cors(app, settings)
+    register_lifecycle_events(app)
 
-def main():
-    print(">>> MAIN() ENTERED <<<")
-    print("Starting F1NDR backend...")
-
-    backend = f1ndr_backend
-
-    try:
-        print(">>> RUNNING INGEST <<<")
-        backend["pipelines"]["ingest"].run({"status": "backend_started"})
-        print("F1NDR backend initialized.")
-    except Exception:
-        print("\n🔥 REAL ERROR BELOW 🔥\n")
-        traceback.print_exc()
-        print("\n🔥 END ERROR 🔥\n")
-        return
-
-    print("Backend entering persistent loop...")
-
-    while True:
-        print(">>> tick thing <<<")
-        time.sleep(5)
-
+    return app
 
 if __name__ == "__main__":
-    print(">>> __main__ EXECUTED <<<")
-    main()
+    app = create_app()
+
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000)),
+        log_level="info"
+    )

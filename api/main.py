@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Response
-from config import apply_cors, setup_logging, get_settings
+from f1ndr_backend.config import apply_cors, setup_logging, get_settings
 from middleware import (
     ErrorHandlerMiddleware,
     RequestIDMiddleware,
