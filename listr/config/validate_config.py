@@ -1,9 +1,9 @@
-"""
-Validation config.
-"""
+class ValidateConfig:
+    def rules(self) -> dict:
+        return {
+            "required_fields": ["title", "body"],
+            "min_length": 5,
+        }
 
-def validate_config():
-    return {
-        "require_location": True,
-        "require_price": True
-    }
+
+validate_config = ValidateConfig()

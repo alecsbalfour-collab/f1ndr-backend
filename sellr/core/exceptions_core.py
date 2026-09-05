@@ -1,14 +1,9 @@
 """
-Helper functions for sellr.
-"""
-
-def safe_field(value):
-    if value is None:
-        return ""
-    return str(value).strip()
-"""
-sellr exceptions.
+Sellr exceptions.
 """
 
 class SellrError(Exception):
+    pass
+
+class ValidationError(SellrError):
     pass

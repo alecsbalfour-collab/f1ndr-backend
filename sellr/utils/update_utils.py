@@ -1,7 +1,10 @@
-def apply_update_rules(payload, rules):
-    out = payload.copy()
+"""
+Update utilities for Sellr.
+"""
 
-    if rules.get("strip_whitespace"):
-        out = {k: str(v).strip() if isinstance(v, str) else v for k, v in out.items()}
+def can_partial_update(config: dict) -> bool:
+    return config.get("allow_partial_updates", True)
 
-    return out
+
+def limit_update_batch(config: dict, count: int) -> bool:
+    return count <= config.get("max_update_batch", 50)

@@ -1,19 +1,15 @@
 """
-sellr controller layer.
+Sellr controller layer.
 """
 
-from sellr.core.service_core import SellrService
+from sellr.core.service_core import ListingService
 
+class ListingController:
+    def __init__(self, service: ListingService):
+        self.service = service
 
-class SellrController:
-    def __init__(self):
-        self.service = SellrService()
+    async def create(self, payload: dict):
+        return await self.service.create_listing(payload)
 
-    def create_listing(self, payload: dict):
-        return self.service.create_listing(payload)
-
-    def update_listing(self, payload: dict):
-        return self.service.update_listing(payload)
-
-    def remove_listing(self, payload: dict):
-        return self.service.remove_listing(payload)
+    async def list(self, query: dict):
+        return await self.service.fetch_listings(query)

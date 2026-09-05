@@ -1,27 +1,14 @@
+# f1ndr-backend/trinn/data/normalize_data.py
 """
-Registry of available pipelines in trinn.
-Each pipeline is a dict describing its steps.
+TRINN normalize data utilities.
 """
 
-from typing import Dict, Any
-
-
-def pipeline_registry() -> Dict[str, Any]:
+def build_normalize_payload(enriched: dict) -> dict:
+    base = enriched.get("raw", {})
     return {
-        "default": {
-            "steps": ["normalize", "transform", "enrich"],
-            "description": "Standard trinn pipeline",
-        },
-        "normalize_only": {
-            "steps": ["normalize"],
-            "description": "Key/value normalization only",
-        },
-        "transform_only": {
-            "steps": ["transform"],
-            "description": "Basic transformation only",
-        },
-        "enrich_only": {
-            "steps": ["enrich"],
-            "description": "Metadata enrichment only",
-        },
+        "id": base.get("id"),
+        "title": base.get("title"),
+        "price": base.get("price"),
+        "location": base.get("location"),
+        "source": enriched.get("source"),
     }

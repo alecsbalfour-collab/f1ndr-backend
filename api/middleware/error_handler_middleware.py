@@ -1,30 +1,38 @@
-from fastapi import FastAPI, Request
+from fastapi import Request
 from fastapi.responses import JSONResponse
-from api.errors.api_exceptions import APIError
-from api.errors.error_response import ErrorResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+from errors import APIException, error_response
+from logging import getLogger
+
+logger = getLogger("api.error")
 
 
-def add_error_handler_middleware(app: FastAPI):
-    @app.exception_handler(APIError)
-    async def api_error_handler(request: Request, exc: APIError):
-        return JSONResponse(
-            status_code=exc.status_code,
-            content=ErrorResponse(
-                error="APIError",
+class ErrorHandlerMiddleware(BaseHTTPMiddleware):
+    """
+    Global error handler middleware.
+    Converts exceptions into unified JSON error responses.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        try:
+            return await call_next(request)
+
+        except APIException as exc:
+            logger.error(f"APIException: {exc.message} details={exc.details}")
+            return error_response(
                 message=exc.message,
+                status_code=exc.status_code,
                 details=exc.details,
-                request_id=getattr(request.state, "request_id", None),
-            ).dict(),
-        )
+            )
 
-    @app.exception_handler(Exception)
-    async def generic_error_handler(request: Request, exc: Exception):
-        return JSONResponse(
-            status_code=500,
-            content=ErrorResponse(
-                error="InternalServerError",
-                message=str(exc),
-                details=None,
-                request_id=getattr(request.state, "request_id", None),
-            ).dict(),
-        )
+        except Exception as exc:
+            logger.exception("Unhandled exception occurred")
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "error": {
+                        "message": "Internal server error",
+                        "details": {"exception": str(exc)},
+                    }
+                },
+            )

@@ -1,26 +1,11 @@
-from .helpers_utils import (
-    generate_scraper_id,
-    to_upper_scraper,
-)
+"""
+Scraper utilities package.
 
-from .html_utils import (
-    extract_text,
-)
+This folder contains utility helpers used by scrapers, such as:
+- logging utilities
+- request helpers
+- retry logic
+- shared formatting helpers
 
-from .browser_utils import (
-    launch_browser,
-    close_browser,
-)
-
-from .retry_utils import (
-    retry,
-)
-
-__all__ = [
-    "generate_scraper_id",
-    "to_upper_scraper",
-    "extract_text",
-    "launch_browser",
-    "close_browser",
-    "retry",
-]
+Scrapers import from this package when they need shared utility functions.
+"""

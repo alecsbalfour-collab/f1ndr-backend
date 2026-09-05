@@ -2,7 +2,8 @@
 Config for listing removal.
 """
 
-def remove_config():
+def get_remove_config() -> dict:
     return {
-        "archive_removed": True
+        "allow_bulk_remove": True,
+        "max_remove_batch": 100,
     }

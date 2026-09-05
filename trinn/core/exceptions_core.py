@@ -1,8 +1,11 @@
+# f1ndr-backend/trinn/core/exceptions_core.py
 """
-Custom exceptions for trinn core.
+TRINN exceptions.
 """
-
 
 class TrinnError(Exception):
-    """Base exception for trinn."""
+    pass
+
+
+class ValidationError(TrinnError):
     pass

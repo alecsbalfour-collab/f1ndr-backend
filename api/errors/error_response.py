@@ -1,9 +1,18 @@
-from pydantic import BaseModel
-from typing import Any
+from typing import Any, Dict
+from fastapi.responses import JSONResponse
 
 
-class ErrorResponse(BaseModel):
-    error: str
-    message: str
-    details: Any | None = None
-    request_id: str | None = None
+def error_response(message: str, status_code: int = 400, details: Dict[str, Any] | None = None) -> JSONResponse:
+    """
+    Unified error response builder.
+    Used by middleware and exception handlers.
+    """
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "error": {
+                "message": message,
+                "details": details or {},
+            }
+        },
+    )

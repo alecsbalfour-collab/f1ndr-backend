@@ -1,4 +1,3 @@
-CATEGORY_KEYWORDS = {
-    "error": ["fail", "exception", "critical"],
-    "warning": ["deprecated", "slow", "unstable"],
+CATEGORIES_DATA = {
+    "fields": ["name", "slug", "parent"],
 }

@@ -1,13 +1,13 @@
 """
-Interfaces for sellr.
+Sellr interface definitions.
 """
 
-class SellingInterface:
-    def create_listing(self, payload: dict):
+class RepoInterface:
+    async def insert_listing(self, listing: dict):
         raise NotImplementedError
 
-    def update_listing(self, payload: dict):
+    async def get_listings(self, query: dict):
         raise NotImplementedError
 
-    def remove_listing(self, payload: dict):
+    async def remove_listing(self, listing_id: str):
         raise NotImplementedError

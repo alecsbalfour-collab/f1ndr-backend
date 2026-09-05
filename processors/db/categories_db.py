@@ -1,22 +1,21 @@
-from .mongo_client import ProcessorsMongoClient
+from .mongo_client import mongo_client
+from config.categories_config import categories_config
 
 
 class CategoriesDB:
-    """
-    Mongo-backed persistence for categorized text records.
-    """
+    def __init__(self):
+        self.collection = mongo_client.db[categories_config.collection_name()]
 
-    def __init__(self, client: ProcessorsMongoClient | None = None):
-        self.client = client or ProcessorsMongoClient()
+    def upsert(self, category: dict) -> dict:
+        self.collection.update_one(
+            {"slug": category.get("slug")},
+            {"$set": category},
+            upsert=True,
+        )
+        return category
 
-    def save(self, text: str, categories: list):
-        self.client.category_records.insert_one({
-            "text": text,
-            "categories": categories
-        })
+    def list_all(self) -> list:
+        return list(self.collection.find({}))
 
-    def find_by_text(self, text: str):
-        return self.client.category_records.find_one({"text": text})
 
-    def all(self):
-        return list(self.client.category_records.find())
+categories_db = CategoriesDB()

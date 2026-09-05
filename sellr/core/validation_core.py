@@ -1,9 +1,7 @@
 """
-Validation helpers.
+Sellr validation utilities.
 """
 
-def is_valid_price(price):
-    try:
-        return float(price) >= 0
-    except:
-        return False
+def require_fields(data: dict, fields: list):
+    missing = [f for f in fields if f not in data]
+    return len(missing) == 0

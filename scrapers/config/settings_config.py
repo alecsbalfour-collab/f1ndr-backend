@@ -1,3 +1,5 @@
+# scrapers/config/settings_config.py
+
 import os
 
 def load_scraper_settings() -> dict:
@@ -8,4 +10,8 @@ def load_scraper_settings() -> dict:
     }
 
 def validate_scraper_settings(cfg: dict) -> bool:
-    return "SCRAPER_ENV" in cfg and "SCRAPER_DEBUG" in cfg
+    return (
+        isinstance(cfg, dict)
+        and "SCRAPER_ENV" in cfg
+        and "SCRAPER_DEBUG" in cfg
+    )

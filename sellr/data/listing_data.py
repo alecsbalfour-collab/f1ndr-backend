@@ -1,11 +1,21 @@
 """
-Rules for creating listings.
+Listing data model and normalization for Sellr.
 """
 
-def listing_rules():
+def normalize_listing(raw: dict) -> dict:
     return {
-        "strip_whitespace": True,
-        "require_title": True,
-        "require_price": True,
-        "default_status": "active"
+        "title": raw.get("title"),
+        "price": raw.get("price"),
+        "url": raw.get("url"),
+        "image": raw.get("image"),
+        "location": raw.get("location"),
+        "platform": raw.get("platform", "sellr"),
     }
+
+
+def validate_listing(data: dict) -> bool:
+    if not data.get("title"):
+        return False
+    if data.get("price") is None:
+        return False
+    return True

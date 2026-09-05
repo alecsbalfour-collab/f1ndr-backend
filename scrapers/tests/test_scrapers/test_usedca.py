@@ -1,6 +1,10 @@
-from scrapers.scrapers.usedca_scraper import scrape_usedca
+import pytest
+import asyncio
+from scrapers.scrapers.usedca_scraper import run
 
-def test_usedca():
-    result = scrape_usedca()
-    assert "title" in result
-    assert "url" in result
+@pytest.mark.asyncio
+async def test_usedca_run():
+    result = await run("furniture")
+    assert "success" in result
+    assert "listings" in result
+    assert isinstance(result["listings"], list)

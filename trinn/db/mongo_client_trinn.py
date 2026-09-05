@@ -1,24 +1,10 @@
+# f1ndr-backend/trinn/db/mongo_client_trinn.py
 """
-Mongo client wrapper for trinn.
-Provides access to collections used by the trinn module.
+Mongo client for TRINN.
 """
 
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 
-class TrinnMongoClient:
-    def __init__(self, uri: str = "mongodb://localhost:27017", db_name: str = "trinn_db"):
-        self.client = MongoClient(uri)
-        self.db = self.client[db_name]
-
-    @property
-    def transform_logs(self):
-        return self.db["transform_logs"]
-
-    @property
-    def normalize_logs(self):
-        return self.db["normalize_logs"]
-
-    @property
-    def enrich_logs(self):
-        return self.db["enrich_logs"]
+def get_trinn_client(uri: str):
+    return AsyncIOMotorClient(uri)

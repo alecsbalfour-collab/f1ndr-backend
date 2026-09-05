@@ -1,11 +1,10 @@
+# f1ndr-backend/trinn/config/pipeline_config.py
 """
-Configuration for transformation rules.
+Config for TRINN pipeline orchestration.
 """
 
-def transform_config():
+def get_pipeline_config() -> dict:
     return {
-        "strip_whitespace": True,
-        "lowercase_keys": True,
-        "convert_empty_to_none": True,
-        "max_length_trim": 500,   # optional safety trim
+        "stages": ["enrich", "normalize", "transform"],
+        "async": True,
     }

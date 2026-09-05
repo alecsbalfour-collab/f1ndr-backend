@@ -1,5 +1,4 @@
+# f1ndr-backend/watchr/core/__init__.py
 """
-watchr.core
-Core orchestration layer for watcher/trigger/event routing.
-Dict‑models only. No engines. No Pydantic.
+Watchr core package initializer.
 """

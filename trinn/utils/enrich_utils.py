@@ -1,24 +1,13 @@
+# f1ndr-backend/trinn/utils/dict_utils.py
 """
-Utilities for enrichment operations.
+TRINN dictionary utilities.
 """
 
-from typing import Dict, Any
-from datetime import datetime
+def merge_dicts(base: dict, updates: dict) -> dict:
+    merged = base.copy()
+    merged.update(updates)
+    return merged
 
 
-def add_timestamp(data: Dict[str, Any]) -> Dict[str, Any]:
-    enriched = data.copy()
-    enriched["_timestamp"] = datetime.utcnow().isoformat()
-    return enriched
-
-
-def add_enriched_flag(data: Dict[str, Any]) -> Dict[str, Any]:
-    enriched = data.copy()
-    enriched["_enriched"] = True
-    return enriched
-
-
-def add_source_tag(data: Dict[str, Any], tag: str = "trinn") -> Dict[str, Any]:
-    enriched = data.copy()
-    enriched["_source"] = tag
-    return enriched
+def filter_keys(data: dict, allowed: list) -> dict:
+    return {k: v for k, v in data.items() if k in allowed}

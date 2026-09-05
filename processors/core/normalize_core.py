@@ -1,26 +1,14 @@
-import re
-
-
 class NormalizeCore:
-    """
-    Core normalization logic.
-    Applies whitespace, casing, and character rules.
-    """
-
-    def __init__(self, config):
+    def __init__(self, config, db, logger):
         self.config = config
+        self.db = db
+        self.logger = logger
 
-    def process(self, text: str) -> str:
-        if self.config.strip_whitespace:
-            text = text.strip()
-
-        if self.config.lowercase:
-            text = text.lower()
-
-        if self.config.remove_special_chars:
-            text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
-
-        if self.config.collapse_spaces:
-            text = re.sub(r"\s+", " ", text)
-
-        return text
+    def normalize(self, payload: dict) -> dict:
+        self.logger.info("Normalizing payload")
+        normalized = {
+            k: (v.strip() if isinstance(v, str) else v)
+            for k, v in payload.items()
+        }
+        self.db.store(normalized)
+        return normalized

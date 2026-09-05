@@ -1,13 +1,15 @@
-def paginate_results(results: list, page: int = 1, per_page: int = 20):
+from typing import Any, Dict, List
+
+def paginate(items: List[Any], page: int = 1, size: int = 20) -> Dict[str, Any]:
     """
-    Simple pagination helper for list-based results.
+    Simple pagination utility.
     """
-    start = (page - 1) * per_page
-    end = start + per_page
+    start = (page - 1) * size
+    end = start + size
 
     return {
         "page": page,
-        "per_page": per_page,
-        "total": len(results),
-        "results": results[start:end]
+        "size": size,
+        "total": len(items),
+        "results": items[start:end],
     }

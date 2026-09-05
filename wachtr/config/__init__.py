@@ -1,5 +1,4 @@
+# f1ndr-backend/watchr/config/__init__.py
 """
-watchr.config
-Configuration layer for watcher/trigger/event routing.
-Contains intervals, routing tables, and module settings.
+Watchr config package initializer.
 """

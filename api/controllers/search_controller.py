@@ -1,30 +1,22 @@
-from api.utils.string_utils import safe_lower, safe_strip
-from api.utils.pagination import paginate_results
-from api.utils.id_generator import generate_id
-from api.utils.response_builder import success_response
+from utils.response_builder import success_response
+from core.rules_core import rule_engine
 
 class SearchController:
     """
-    Controller for search operations.
-    Thin layer: validate → use utils → respond.
+    Example search controller.
+    Replace logic later when integrating real search modules.
     """
 
-    def search(self, query: str, page: int = 1, per_page: int = 20):
-        normalized = safe_lower(safe_strip(query))
+    def search(self, query: str):
+        processed = rule_engine.apply_rules({"query": query})
 
-        # Dummy results for now — replace with your real engine later
-        results = [
-            {
-                "id": generate_id(),
-                "title": f"Result for '{normalized}' #{i+1}",
-                "source": "placeholder"
-            }
-            for i in range(50)
-        ]
+        # Placeholder search result
+        result = {
+            "query": processed["query"],
+            "results": [],
+        }
 
-        paginated = paginate_results(results, page, per_page)
+        return success_response(result, "Search completed")
 
-        return success_response(
-            data=paginated,
-            message="Search results"
-        )
+
+search_controller = SearchController()

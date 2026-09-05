@@ -1,6 +1,4 @@
-# utils module initializer
+# f1ndr-backend/trinn/utils/__init__.py
 """
-trinn.utils
-Utility functions for transformation, normalization, and enrichment.
-Dict-based helpers only.
+TRINN utils package initializer.
 """

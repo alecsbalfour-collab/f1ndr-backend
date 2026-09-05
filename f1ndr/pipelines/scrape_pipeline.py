@@ -1,20 +1,9 @@
-"""
-Scrape Pipeline
-Runs only the scraping + extraction portion.
-Useful for debugging scrapers.
-"""
-
-from bs4 import BeautifulSoup
-
-
 class ScrapePipeline:
-    def __init__(self, scraper):
-        self.scraper = scraper
+    def run(self, source: str, params: dict) -> dict:
+        return {
+            "source": source,
+            "params": params,
+            "status": "scrape_pipeline_executed",
+        }
 
-    def run(self, query: str, filters: dict):
-        raw_html = self.scraper.fetch_for_query(query, filters)
-        if not raw_html:
-            return []
-
-        dom = BeautifulSoup(raw_html, "html.parser")
-        return self.scraper.extract(dom)
+scrape_pipeline = ScrapePipeline()

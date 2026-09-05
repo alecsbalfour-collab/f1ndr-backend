@@ -1,6 +1,10 @@
-from scrapers.scrapers.craigslist_scraper import scrape_craigslist
+import pytest
+import asyncio
+from scrapers.scrapers.craigslist_scraper import run
 
-def test_craigslist():
-    result = scrape_craigslist()
-    assert "title" in result
-    assert "url" in result
+@pytest.mark.asyncio
+async def test_craigslist_run():
+    result = await run("bike")
+    assert "success" in result
+    assert "listings" in result
+    assert isinstance(result["listings"], list)

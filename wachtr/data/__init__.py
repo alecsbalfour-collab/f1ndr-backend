@@ -1,5 +1,4 @@
+# f1ndr-backend/watchr/data/__init__.py
 """
-wachtr.data
-Data-layer components for watcher/trigger/event routing.
-Contains watchers, triggers, subscription registries, and event definitions.
+Watchr data package initializer.
 """

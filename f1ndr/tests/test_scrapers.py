@@ -1,14 +1,16 @@
-from f1ndr.scrapers.kijiji_scraper import KijijiScraper
+def test_autotrader_scraper():
+    from f1ndr.scrapers import autotrader_scraper
+    result = autotrader_scraper.scrape({"q": "cars"})
+    assert result["status"] == "scraper_executed"
 
-def test_kijiji_scraper_fetch():
-    scraper = KijijiScraper()
-    html = scraper.fetch_for_query("bike", {})
-    assert isinstance(html, str)
 
-def test_kijiji_scraper_extract():
-    scraper = KijijiScraper()
-    sample_html = "<div class='search-item'><a href='/v-bike'>Bike</a><div class='price'>$100</div></div>"
-    dom = scraper.parse(sample_html)
-    listings = scraper.extract(dom)
-    assert len(listings) >= 1
-    assert listings[0]["title"] == "Bike"
+def test_kijiji_scraper():
+    from f1ndr.scrapers import kijiji_scraper
+    result = kijiji_scraper.scrape({"q": "rentals"})
+    assert result["status"] == "scraper_executed"
+
+
+def test_zillow_scraper():
+    from f1ndr.scrapers import zillow_scraper
+    result = zillow_scraper.scrape({"q": "homes"})
+    assert result["status"] == "scraper_executed"

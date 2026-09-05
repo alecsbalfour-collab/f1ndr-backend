@@ -1,10 +1,11 @@
-"""
-Interfaces for lisTr.
-"""
-
-class PostingInterface:
-    def post(self, payload: dict):
+class ServiceInterface:
+    def create_post(self, data: dict) -> dict:
         raise NotImplementedError
 
-    def validate(self, payload: dict):
+    def get_post(self, post_id: str) -> dict:
+        raise NotImplementedError
+
+
+class ValidatorInterface:
+    def validate(self, data: dict) -> dict:
         raise NotImplementedError

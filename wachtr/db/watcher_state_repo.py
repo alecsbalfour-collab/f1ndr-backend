@@ -1,25 +1,15 @@
+# f1ndr-backend/watchr/db/watcher_state_repo.py
 """
-Repository for watcher state.
-Tracks last-run timestamps, last-known values, and active watchers.
+Watcher state repository.
 """
-
-from typing import Dict, Any
-from .mongo_client_watchr import WatchrMongoClient
-
 
 class WatcherStateRepo:
-    def __init__(self, client: WatchrMongoClient):
-        self.collection = client.watcher_state
+    def __init__(self, client):
+        self.collection = client["watchr_state"]
 
-    def get(self, key: str) -> Dict[str, Any]:
-        return self.collection.find_one({"key": key.lower()}) or {}
+    async def insert(self, doc: dict):
+        await self.collection.insert_one(doc)
 
-    def update(self, key: str, data: Dict[str, Any]):
-        self.collection.update_one(
-            {"key": key.lower()},
-            {"$set": data},
-            upsert=True
-        )
-
-    def all(self):
-        return list(self.collection.find({}))
+    async def fetch(self, query: dict):
+        cursor = self.collection.find(query)
+        return [d async for d in cursor]

@@ -1,34 +1,27 @@
 import logging
-import logging.config
+from logging.config import dictConfig
 
-
-def configure_logging(settings):
-    log_format = (
-        '{"level": "%(levelname)s", "time": "%(asctime)s", '
-        '"logger": "%(name)s", "message": "%(message)s"}'
-        if settings.log_json
-        else "%(levelname)s | %(asctime)s | %(name)s | %(message)s"
-    )
-
-    logging_config = {
+def setup_logging() -> None:
+    """
+    Configure application-wide logging using dictConfig.
+    """
+    dictConfig({
         "version": 1,
-        "disable_existing_loggers": False,
         "formatters": {
-            "default": {"format": log_format},
+            "default": {
+                "format": "[%(asctime)s] [%(levelname)s] %(name)s: %(message)s",
+            },
         },
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
                 "formatter": "default",
-            }
+            },
         },
-        "loggers": {
-            "api": {
-                "handlers": ["console"],
-                "level": settings.log_level,
-                "propagate": False,
-            }
+        "root": {
+            "level": "INFO",
+            "handlers": ["console"],
         },
-    }
+    })
 
-    logging.config.dictConfig(logging_config)
+    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)

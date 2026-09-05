@@ -1,49 +1,37 @@
+# f1ndr-backend/watchr/core/service_core.py
 """
-Service layer for wchtr.
-Coordinates watchers, triggers, subscriptions, and event routing.
-No engines. No processors. Pure event orchestration.
+Watchr service layer.
 """
 
-from typing import Dict, Any
-from .helpers import safe_get
-from .exceptions import UnknownEventError
+from watchr.data.event_definitions import build_event_payload
+from watchr.data.subscription_data import build_subscription_payload
+from watchr.data.trigger_data import build_trigger_payload
+from watchr.data.watchr_data import build_state_payload
 
 
-class WachtrService:
-    def __init__(self):
-        # In-memory subscription registry (db layer will override this)
-        self.subscriptions = {}
+class WatchrService:
+    def __init__(self, event_log_repo, subscription_repo, state_repo, pipeline_repo):
+        self.event_log_repo = event_log_repo
+        self.subscription_repo = subscription_repo
+        self.state_repo = state_repo
+        self.pipeline_repo = pipeline_repo
 
-    def handle_watch_event(self, key: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Called when something changes in the system.
-        Example: price change, new listing, updated listing, new match.
-        """
-        return {
-            "watch_key": key,
-            "received": payload,
-            "status": "watch_event_processed",
-        }
+    async def process(self, raw: dict) -> dict:
+        event_payload = build_event_payload(raw)
+        await self.event_log_repo.insert(event_payload)
 
-    def trigger_event(self, event: str, data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Trigger a downstream event.
-        Example: notify user, update f1ndr, update lisTr, update sellr.
-        """
-        if event not in ["price_change", "new_listing", "match_found", "listing_update"]:
-            raise UnknownEventError(event)
+        subscription_payload = build_subscription_payload(event_payload)
+        await self.subscription_repo.insert(subscription_payload)
+
+        trigger_payload = build_trigger_payload(subscription_payload)
+        await self.pipeline_repo.insert(trigger_payload)
+
+        state_payload = build_state_payload(trigger_payload)
+        await self.state_repo.insert(state_payload)
 
         return {
-            "event": event,
-            "data": data,
-            "status": "trigger_dispatched",
-        }
-
-    def get_subscriptions(self) -> Dict[str, Any]:
-        """
-        Return all active watcher subscriptions.
-        """
-        return {
-            "subscriptions": self.subscriptions,
-            "count": len(self.subscriptions),
+            "event": event_payload,
+            "subscription": subscription_payload,
+            "trigger": trigger_payload,
+            "state": state_payload,
         }

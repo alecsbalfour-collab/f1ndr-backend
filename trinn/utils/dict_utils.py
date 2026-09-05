@@ -1,15 +1,13 @@
+# f1ndr-backend/trinn/utils/dict_utils.py
 """
-General-purpose dict utilities for trinn.
+TRINN dictionary utilities.
 """
 
-from typing import Dict, Any
-
-
-def merge_dicts(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
-    merged = a.copy()
-    merged.update(b)
+def merge_dicts(base: dict, updates: dict) -> dict:
+    merged = base.copy()
+    merged.update(updates)
     return merged
 
 
-def safe_get(d: Dict[str, Any], key: str, default=None):
-    return d.get(key, default)
+def filter_keys(data: dict, allowed: list) -> dict:
+    return {k: v for k, v in data.items() if k in allowed}

@@ -1,15 +1,5 @@
-"""
-Helper functions for f1ndr.
-"""
+class CoreHelpers:
+    def normalize(self, value):
+        return value.strip().lower() if isinstance(value, str) else value
 
-def safe_str(value):
-    if value is None:
-        return ""
-    return str(value).strip()
-
-
-def safe_float(value, default=0.0):
-    try:
-        return float(str(value).replace(",", "").strip())
-    except:
-        return default
+core_helpers = CoreHelpers()

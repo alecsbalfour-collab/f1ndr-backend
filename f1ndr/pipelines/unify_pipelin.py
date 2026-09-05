@@ -1,17 +1,8 @@
-"""
-Unify Pipeline
-Takes raw listings and unifies them without scraping.
-Useful for testing unifier + trinn.
-"""
+class SearchPipeline:
+    def run(self, query: dict) -> dict:
+        return {
+            "query": query,
+            "status": "search_pipeline_executed",
+        }
 
-from trinn.module import trinn
-
-
-class UnifyPipeline:
-    def __init__(self, unifier):
-        self.unifier = unifier
-
-    def run(self, raw_listings: list, source: str):
-        unified = [self.unifier.unify(item, source) for item in raw_listings]
-        transformed = [trinn.transform(item) for item in unified]
-        return transformed
+search_pipeline = SearchPipeline()

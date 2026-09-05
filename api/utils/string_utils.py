@@ -1,16 +1,19 @@
-def safe_lower(value: str | None):
+def to_lower(value: str) -> str:
     """
-    Safely lowercase a string without throwing errors.
+    Convert a string to lowercase safely.
     """
-    if not value:
-        return ""
-    return value.lower()
+    return value.lower() if isinstance(value, str) else value
 
 
-def safe_strip(value: str | None):
+def to_upper(value: str) -> str:
     """
-    Safely strip whitespace from a string.
+    Convert a string to uppercase safely.
     """
-    if not value:
-        return ""
-    return value.strip()
+    return value.upper() if isinstance(value, str) else value
+
+
+def strip_spaces(value: str) -> str:
+    """
+    Remove leading/trailing whitespace.
+    """
+    return value.strip() if isinstance(value, str) else value

@@ -1,6 +1,10 @@
-"""
-lisTr exceptions.
-"""
+class CoreException(Exception):
+    pass
 
-class LisTrError(Exception):
+
+class ValidationException(CoreException):
+    pass
+
+
+class ProcessingException(CoreException):
     pass

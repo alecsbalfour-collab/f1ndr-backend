@@ -1,22 +1,14 @@
-"""
-lisTr controller layer.
-"""
+class ControllerCore:
+    def __init__(self, service, validator):
+        self.service = service
+        self.validator = validator
 
-from listr.core.service_core import LisTrService
+    def create_post(self, data: dict) -> dict:
+        validation = self.validator.validate(data)
+        if validation.get("status") != "ok":
+            return validation
 
+        return self.service.create_post(data)
 
-class LisTrController:
-    def __init__(self):
-        self.service = LisTrService()
-
-    def post(self, payload: dict):
-        return self.service.post(payload)
-
-    def validate(self, payload: dict):
-        return self.service.validate(payload)
-
-    def delete(self, payload: dict):
-        return self.service.delete(payload)
-
-    def update(self, payload: dict):
-        return self.service.update(payload)
+    def get_post(self, post_id: str) -> dict:
+        return self.service.get_post(post_id)

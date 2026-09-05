@@ -1,19 +1,11 @@
-from .rules_core import (
-    apply_scraper_rules,
-    is_valid_scraper_record,
-)
+"""
+Scraper core package.
 
-from .validator_core import (
-    validate_listing,
-)
+This folder contains core logic used by scrapers, such as:
+- HTML parsing helpers
+- request handling helpers
+- selector utilities
+- shared extraction logic
 
-from .normalizer_core import (
-    normalize_listing,
-)
-
-__all__ = [
-    "apply_scraper_rules",
-    "is_valid_scraper_record",
-    "validate_listing",
-    "normalize_listing",
-]
+Each scraper imports from this package when it needs shared core functionality.
+"""

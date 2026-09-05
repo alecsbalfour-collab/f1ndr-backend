@@ -1,12 +1,6 @@
-class AppConfig:
-    """
-    Core application configuration.
-    """
+class APIConfig:
+    version: str = "1.0.0"
+    base_url: str = "https://f1ndr.api"
+    timeout: int = 30
 
-    app_name: str = "f1ndr"
-    environment: str = "development"
-    debug: bool = True
-
-    def __init__(self, **overrides):
-        for key, value in overrides.items():
-            setattr(self, key, value)
+api_config = APIConfig()

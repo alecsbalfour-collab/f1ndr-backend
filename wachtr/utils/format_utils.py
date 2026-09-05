@@ -1,23 +1,7 @@
+# f1ndr-backend/watchr/utils/format_utils.py
 """
-Formatting utilities for watchr.
-Used to format event logs, watcher output, and subscription entries.
+Formatting utilities.
 """
 
-from typing import Dict, Any
-
-
-def format_event_log(event: str, data: Dict[str, Any]) -> Dict[str, Any]:
-    return {
-        "event": event.lower(),
-        "data": data,
-        "formatted": True,
-    }
-
-
-def format_subscription(user_id: str, event: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-    return {
-        "user_id": user_id,
-        "event": event.lower(),
-        "payload": payload,
-        "status": "active",
-    }
+def format_event(event: dict) -> str:
+    return f"[{event.get('timestamp')}] {event.get('event_type')}"

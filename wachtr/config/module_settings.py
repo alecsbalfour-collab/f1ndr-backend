@@ -1,12 +1,10 @@
+# f1ndr-backend/watchr/config/module_settings.py
 """
-Module-level settings for watchr.
-General configuration flags and options.
+General Watchr module settings.
 """
 
-def watchr_settings():
+def get_module_settings() -> dict:
     return {
-        "enabled": True,
-        "log_events": True,
-        "max_subscriptions_per_user": 50,
-        "allow_custom_intervals": False,
+        "strict_mode": False,
+        "logging_enabled": True,
     }

@@ -1,20 +1,29 @@
-class APIError(Exception):
-    def __init__(self, message: str, status_code: int = 400, details: dict | None = None):
+from fastapi import HTTPException
+from typing import Any, Dict
+
+
+class APIException(HTTPException):
+    """
+    Unified API exception wrapper.
+    Provides consistent structure for all raised errors.
+    """
+
+    def __init__(self, status_code: int, message: str, details: Dict[str, Any] | None = None):
+        super().__init__(status_code=status_code, detail=message)
         self.message = message
-        self.status_code = status_code
         self.details = details or {}
 
-
-class NotFoundError(APIError):
-    def __init__(self, message="Resource not found", details=None):
-        super().__init__(message, 404, details)
-
-
-class ValidationError(APIError):
-    def __init__(self, message="Validation failed", details=None):
-        super().__init__(message, 422, details)
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "error": {
+                "message": self.message,
+                "details": self.details,
+            }
+        }
 
 
-class UnauthorizedError(APIError):
-    def __init__(self, message="Unauthorized", details=None):
-        super().__init__(message, 401, details)
+def raise_api_error(status_code: int, message: str, details: Dict[str, Any] | None = None):
+    """
+    Helper to raise APIException cleanly.
+    """
+    raise APIException(status_code=status_code, message=message, details=details)

@@ -1,25 +1,11 @@
+# f1ndr-backend/trinn/core/interface_core.py
 """
-Interfaces for trinn core.
-Defines abstract contracts for transformation pipelines.
+TRINN interface definitions.
 """
 
-from abc import ABC, abstractmethod
-from typing import Dict, Any
+class RepoInterface:
+    async def insert(self, doc: dict):
+        raise NotImplementedError
 
-
-class TransformInterface(ABC):
-    @abstractmethod
-    def transform(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        pass
-
-
-class NormalizeInterface(ABC):
-    @abstractmethod
-    def normalize(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        pass
-
-
-class EnrichInterface(ABC):
-    @abstractmethod
-    def enrich(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        pass
+    async def fetch(self, query: dict):
+        raise NotImplementedError

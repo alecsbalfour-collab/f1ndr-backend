@@ -1,13 +1,7 @@
+# f1ndr-backend/watchr/utils/routing_utils.py
 """
-Routing helpers for watchr.
-Used to resolve trigger routes and dispatch targets.
+Routing utilities.
 """
 
-from typing import Dict, Any
-
-
-def resolve_route(event: str, routing_table: Dict[str, str]) -> str:
-    """
-    Return the route for a given event.
-    """
-    return routing_table.get(event.lower(), "unknown.route")
+def route_event(event_type: str) -> str:
+    return f"route_for_{event_type}"

@@ -1,14 +1,11 @@
+# f1ndr-backend/trinn/data/enrich_data.py
 """
-Enrichment rules for trinn.
-Defines metadata and computed fields to add.
+TRINN enrich data utilities.
 """
 
-from typing import Dict, Any
-
-
-def enrich_rules() -> Dict[str, Any]:
+def build_enrich_payload(raw: dict) -> dict:
     return {
-        "add_timestamp": True,
-        "add_enriched_flag": True,
-        "add_source_tag": True,
+        "source": raw.get("source"),
+        "raw": raw,
+        "metadata": raw.get("metadata", {}),
     }

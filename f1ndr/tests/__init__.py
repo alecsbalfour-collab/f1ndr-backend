@@ -1,3 +1,1 @@
-"""
-f1ndr tests package.
-"""
+# empty init for test package

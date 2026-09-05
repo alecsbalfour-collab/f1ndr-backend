@@ -1,14 +1,13 @@
+# f1ndr-backend/trinn/data/transform_data.py
 """
-Default transformation rules for trinn.
-These are simple dict-based transformation definitions.
+TRINN transform data utilities.
 """
 
-from typing import Dict, Any
-
-
-def transform_rules() -> Dict[str, Any]:
+def build_transform_payload(normalized: dict) -> dict:
     return {
-        "strip_whitespace": True,
-        "lowercase_keys": True,
-        "convert_empty_to_none": True,
+        "id": normalized.get("id"),
+        "title": normalized.get("title"),
+        "price": normalized.get("price"),
+        "location": normalized.get("location"),
+        "canonical_source": normalized.get("source"),
     }

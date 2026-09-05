@@ -1,19 +1,11 @@
+# f1ndr-backend/watchr/core/interfaces_core.py
 """
-Interfaces for watchr core.
-Defines abstract contracts for watcher and trigger components.
+Watchr interface definitions.
 """
 
-from abc import ABC, abstractmethod
-from typing import Dict, Any
+class RepoInterface:
+    async def insert(self, doc: dict):
+        raise NotImplementedError
 
-
-class WatchInterface(ABC):
-    @abstractmethod
-    def handle_watch_event(self, key: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        pass
-
-
-class TriggerInterface(ABC):
-    @abstractmethod
-    def trigger_event(self, event: str, data: Dict[str, Any]) -> Dict[str, Any]:
-        pass
+    async def fetch(self, query: dict):
+        raise NotImplementedError

@@ -1,5 +1,4 @@
+# f1ndr-backend/trinn/config/__init__.py
 """
-trinn.config
-Configuration layer for transformation, normalization, and enrichment.
-Dict-based configuration only.
+TRINN config package initializer.
 """

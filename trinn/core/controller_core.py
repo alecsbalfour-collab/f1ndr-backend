@@ -1,22 +1,14 @@
+# f1ndr-backend/trinn/core/controller_core.py
 """
-Controller layer for trinn.
-Routes incoming transformation/normalization/enrichment requests to the service layer.
+TRINN controller layer.
 """
 
-from typing import Dict, Any
-from .service_core import TrinnService
-from .helpers_core import normalize_key
+from trinn.core.service_core import TrinnService
 
 
 class TrinnController:
-    def __init__(self):
-        self.service = TrinnService()
+    def __init__(self, service: TrinnService):
+        self.service = service
 
-    def transform(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        return self.service.transform(payload)
-
-    def normalize(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        return self.service.normalize(payload)
-
-    def enrich(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        return self.service.enrich(payload)
+    async def run_pipeline(self, payload: dict) -> dict:
+        return await self.service.run_pipeline(payload)

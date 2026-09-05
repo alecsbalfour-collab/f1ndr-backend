@@ -1,8 +1,6 @@
 """
-Helper functions for sellr.
+Sellr helper utilities.
 """
 
-def safe_field(value):
-    if value is None:
-        return ""
-    return str(value).strip()
+def safe_get(data: dict, key: str, default=None):
+    return data.get(key, default)

@@ -1,34 +1,12 @@
-"""
-f1ndr module
-Public entrypoint for all search operations.
-"""
+class F1NDRModule:
+    name: str = "f1ndr"
+    version: str = "1.0.0"
 
-from f1ndr.core.controller_core import F1ndrController
-
-
-class f1ndr:
-    """
-    Main interface for external modules:
-    - lisTr
-    - sellr
-    - watchr
-    - frontend
-    """
-
-    controller = F1ndrController()
-
-    @staticmethod
-    def search(query: str, sources=None, filters=None):
-        """
-        Public search function.
-
-        Example:
-            f1ndr.search("mountain bike", ["kijiji", "facebook"])
-        """
-        payload = {
-            "query": query,
-            "sources": sources or ["kijiji"],
-            "filters": filters or {}
+    def info(self) -> dict:
+        return {
+            "name": self.name,
+            "version": self.version,
         }
 
-        return f1ndr.controller.search(payload)
+
+f1ndr_module = F1NDRModule()

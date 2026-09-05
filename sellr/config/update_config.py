@@ -2,7 +2,8 @@
 Config for listing updates.
 """
 
-def update_config():
+def get_update_config() -> dict:
     return {
-        "allow_price_change": True
+        "max_update_batch": 50,
+        "allow_partial_updates": True,
     }

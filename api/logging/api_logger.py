@@ -1,18 +1,10 @@
 import logging
 
-def get_api_logger():
+def get_logger(name: str) -> logging.Logger:
     """
-    Central API logger used across middleware, controllers, and backend.
+    Unified logger factory for the API layer.
+    Ensures consistent formatting and log levels.
     """
-    logger = logging.getLogger("f1ndr_api")
-    logger.setLevel(logging.INFO)
+    return logging.getLogger(name)
 
-    if not logger.handlers:
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter(
-            "%(asctime)s [%(levelname)s] %(message)s"
-        )
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-
-    return logger
+api_logger = get_logger("api")

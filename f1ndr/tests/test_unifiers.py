@@ -1,11 +1,34 @@
-from f1ndr.unifiers.listing_unifier import ListingUnifier
+import pytest
+from f1ndr.unifiers.listing_unifier import unify_listing
 
-def test_unifier_basic():
-    unifier = ListingUnifier()
-    raw = {"title": "Bike", "price": "100", "url": "/bike"}
-    unified = unifier.unify(raw, "kijiji")
+def test_unify_listing_basic():
+    raw = {
+        "title": "Toyota Corolla",
+        "price": 8000,
+        "platform": "kijiji",
+        "url": "http://example.com",
+        "images": ["img.jpg"],
+        "location": "Calgary",
+        "posted_at": "2026-01-03"
+    }
 
-    assert unified["title"] == "Bike"
-    assert unified["price"] == 100.0
-    assert unified["url"] == "/bike"
-    assert unified["source"] == "kijiji"
+    unified = unify_listing(raw)
+
+    assert unified["title"] == "Toyota Corolla"
+    assert unified["platform"] == "kijiji"
+    assert unified["price"] == 8000
+    assert "raw" in unified
+
+def test_unify_listing_missing_fields():
+    raw = {
+        "title": "Unknown Car",
+        "platform": "craigslist",
+        "url": "http://example.com"
+    }
+
+    unified = unify_listing(raw)
+
+    assert unified["title"] == "Unknown Car"
+    assert unified["platform"] == "craigslist"
+    assert unified["price"] is None or unified["price"] == raw.get("price")
+    assert "raw" in unified

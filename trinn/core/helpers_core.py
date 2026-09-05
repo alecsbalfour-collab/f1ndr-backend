@@ -1,13 +1,7 @@
+# f1ndr-backend/trinn/core/helpers_core.py
 """
-Helper utilities for trinn core.
+TRINN helper utilities.
 """
 
-from typing import Dict, Any
-
-
-def normalize_key(key: str) -> str:
-    return key.strip().lower()
-
-
-def safe_get(d: Dict[str, Any], key: str, default=None):
-    return d.get(key, default)
+def safe_get(data: dict, key: str, default=None):
+    return data.get(key, default)

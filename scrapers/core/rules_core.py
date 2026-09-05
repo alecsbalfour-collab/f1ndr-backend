@@ -1,9 +1,16 @@
+# scrapers/core/rules_core.py
+
 def apply_scraper_rules(record: dict) -> dict:
+    """
+    Apply cleanup rules to raw scraper output.
+    """
     cleaned = dict(record)
 
-    if "title" in cleaned:
+    # Title cleanup
+    if "title" in cleaned and isinstance(cleaned["title"], str):
         cleaned["title"] = cleaned["title"].strip()
 
+    # Price normalization
     if "price" in cleaned:
         try:
             cleaned["price"] = float(cleaned["price"])
@@ -12,6 +19,3 @@ def apply_scraper_rules(record: dict) -> dict:
 
     cleaned["scraped"] = True
     return cleaned
-
-def is_valid_scraper_record(record: dict) -> bool:
-    return isinstance(record, dict) and "title" in record

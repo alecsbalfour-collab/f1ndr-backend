@@ -1,27 +1,15 @@
+# f1ndr-backend/watchr/db/event_log_repo.py
 """
-Repository for event logs.
-Stores triggered events for auditing and debugging.
+Event log repository.
 """
-
-from typing import Dict, Any
-from .mongo_client_watchr import WatchrMongoClient
-
 
 class EventLogRepo:
-    def __init__(self, client: WatchrMongoClient):
-        self.collection = client.event_logs
+    def __init__(self, client):
+        self.collection = client["watchr_event_log"]
 
-    def log(self, event: str, data: Dict[str, Any]):
-        entry = {
-            "event": event.lower(),
-            "data": data,
-            "status": "logged"
-        }
-        self.collection.insert_one(entry)
-        return entry
+    async def insert(self, doc: dict):
+        await self.collection.insert_one(doc)
 
-    def get_by_event(self, event: str):
-        return list(self.collection.find({"event": event.lower()}))
-
-    def all(self):
-        return list(self.collection.find({}))
+    async def fetch(self, query: dict):
+        cursor = self.collection.find(query)
+        return [d async for d in cursor]

@@ -1,9 +1,12 @@
-from datetime import datetime
+from utils.response_builder import success_response
+
+class HealthController:
+    """
+    Basic health check controller.
+    """
+
+    def get_status(self):
+        return success_response({"status": "healthy"}, "Service is running")
 
 
-def get_health(version: str):
-    return {
-        "status": "ok",
-        "version": version,
-        "timestamp": datetime.utcnow().isoformat()
-    }
+health_controller = HealthController()

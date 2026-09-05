@@ -1,18 +1,23 @@
-import logging
+import time
+from fastapi import Request
+from typing import Callable
+from .api_logger import api_logger
 
-def log_request(request, request_id: str):
+
+async def log_request(request: Request, call_next: Callable):
     """
-    Logs incoming API requests with method, path, and request ID.
+    Logs incoming requests and their execution time.
+    This is used by middleware.
     """
-    logging.info(
-        f"[REQUEST] {request.method} {request.url.path} | request_id={request_id}"
+    start_time = time.time()
+
+    response = await call_next(request)
+
+    duration = round((time.time() - start_time) * 1000, 2)
+
+    api_logger.info(
+        f"{request.method} {request.url.path} completed in {duration}ms "
+        f"status={response.status_code}"
     )
 
-
-def log_response(request_id: str, status_code: int, duration_ms: float):
-    """
-    Logs outgoing API responses with status code and timing.
-    """
-    logging.info(
-        f"[RESPONSE] status={status_code} duration={duration_ms}ms | request_id={request_id}"
-    )
+    return response

@@ -1,3 +1,5 @@
+# scrapers/config/marketplace_config.py
+
 def get_marketplace_config() -> dict:
     return {
         "facebook": {"enabled": True, "rate_limit": 2},

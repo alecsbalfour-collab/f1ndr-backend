@@ -1,17 +1,10 @@
-from .validator_utils import ValidatorUtils
-from .logger_utils import LoggerUtils
-from .exception_utils import (
-    ProcessorError,
-    ProcessorConfigError,
-    ProcessorExecutionError,
-)
-from .formatter_utils import FormatterUtils
+from core.normalize_core import NormalizeCore
+from db.normalize_db import normalize_db
+from config.normalize_config import normalize_config
+from utils.logger_utils import logger_utils
 
-__all__ = [
-    "ValidatorUtils",
-    "LoggerUtils",
-    "ProcessorError",
-    "ProcessorConfigError",
-    "ProcessorExecutionError",
-    "FormatterUtils",
-]
+
+def test_normalize_payload():
+    core = NormalizeCore(normalize_config, normalize_db, logger_utils.logger)
+    result = core.normalize({"field": " value "})
+    assert result["field"] == "value"

@@ -1,24 +1,16 @@
+# f1ndr-backend/trinn/db/normalize_repo.py
 """
-Repository for normalization logs.
-Stores normalized results for debugging and auditing.
+TRINN normalize repository.
 """
-
-from typing import Dict, Any
-from .mongo_client_trinn import TrinnMongoClient
-
 
 class NormalizeRepo:
-    def __init__(self, client: TrinnMongoClient):
-        self.collection = client.normalize_logs
+    def __init__(self, client):
+        self.client = client
+        self.collection = client["trinn_normalize"]
 
-    def log(self, payload: Dict[str, Any], output: Dict[str, Any]):
-        entry = {
-            "input": payload,
-            "output": output,
-            "status": "normalized"
-        }
-        self.collection.insert_one(entry)
-        return entry
+    async def insert(self, doc: dict):
+        await self.collection.insert_one(doc)
 
-    def all(self):
-        return list(self.collection.find({}))
+    async def fetch(self, query: dict):
+        cursor = self.collection.find(query)
+        return [d async for d in cursor]

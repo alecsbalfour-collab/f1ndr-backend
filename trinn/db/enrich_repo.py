@@ -1,24 +1,16 @@
+# f1ndr-backend/trinn/db/enrich_repo.py
 """
-Repository for enrichment logs.
-Stores enriched results for debugging and auditing.
+TRINN enrich repository.
 """
-
-from typing import Dict, Any
-from .mongo_client_trinn import TrinnMongoClient
-
 
 class EnrichRepo:
-    def __init__(self, client: TrinnMongoClient):
-        self.collection = client.enrich_logs
+    def __init__(self, client):
+        self.client = client
+        self.collection = client["trinn_enrich"]
 
-    def log(self, payload: Dict[str, Any], output: Dict[str, Any]):
-        entry = {
-            "input": payload,
-            "output": output,
-            "status": "enriched"
-        }
-        self.collection.insert_one(entry)
-        return entry
+    async def insert(self, doc: dict):
+        await self.collection.insert_one(doc)
 
-    def all(self):
-        return list(self.collection.find({}))
+    async def fetch(self, query: dict):
+        cursor = self.collection.find(query)
+        return [d async for d in cursor]

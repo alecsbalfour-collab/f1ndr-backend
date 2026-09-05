@@ -1,11 +1,10 @@
+# f1ndr-backend/trinn/config/normalize_config.py
 """
-Configuration for normalization rules.
+Config for TRINN normalize stage.
 """
 
-def normalize_config():
+def get_normalize_config() -> dict:
     return {
-        "key_case": "lower",
-        "trim_strings": True,
-        "collapse_spaces": True,
-        "remove_special_chars": False,
+        "enabled": True,
+        "strict": True,
     }

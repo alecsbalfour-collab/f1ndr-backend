@@ -1,11 +1,10 @@
+# f1ndr-backend/trinn/config/enrich_config.py
 """
-Configuration for enrichment rules.
+Config for TRINN enrich stage.
 """
 
-def enrich_config():
+def get_enrich_config() -> dict:
     return {
-        "add_timestamp": True,
-        "add_enriched_flag": True,
-        "add_source_tag": True,
-        "source_tag_value": "trinn",
+        "enabled": True,
+        "max_batch_size": 100,
     }

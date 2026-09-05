@@ -1,24 +1,14 @@
-"""
-Mongo client wrapper for processors.
-Provides access to collections used by the processors module.
-"""
-
-from pymongo import MongoClient
+from .mongo_client import mongo_client
+from config.normalize_config import normalize_config
 
 
-class ProcessorsMongoClient:
-    def __init__(
-        self,
-        uri: str = "mongodb://localhost:27017",
-        db_name: str = "f1ndr_backend"
-    ):
-        self.client = MongoClient(uri)
-        self.db = self.client[db_name]
+class NormalizeDB:
+    def __init__(self):
+        self.collection = mongo_client.db[normalize_config.collection_name()]
 
-    @property
-    def normalize_records(self):
-        return self.db["normalize_records"]
+    def store(self, payload: dict) -> dict:
+        self.collection.insert_one(payload)
+        return payload
 
-    @property
-    def category_records(self):
-        return self.db["category_records"]
+
+normalize_db = NormalizeDB()

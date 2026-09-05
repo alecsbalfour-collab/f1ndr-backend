@@ -1,13 +1,5 @@
-from processors.utils.formatter_utils import FormatterUtils
+from utils.logger_utils import logger_utils
 
 
-def test_trim():
-    assert FormatterUtils.trim("  hello  ") == "hello"
-
-
-def test_clean_whitespace():
-    assert FormatterUtils.clean_whitespace("hello   world") == "hello world"
-
-
-def test_normalize_case():
-    assert FormatterUtils.normalize_case("HELLO") == "hello"
+def test_logger_utils_has_logger():
+    assert logger_utils.logger is not None

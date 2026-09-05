@@ -1,16 +1,20 @@
-from sellr.core.controller_core import SellrController
+import pytest
+from sellr.core.service_core import ListingService
+from sellr.db.listing_repo import ListingRepo
 
-def test_create_listing():
-    c = SellrController()
-    result = c.create_listing({"title": "Bike", "price": "100"})
-    assert result["status"] == "created"
+class FakeRepo(ListingRepo):
+    def __init__(self):
+        self.items = []
 
-def test_update_listing():
-    c = SellrController()
-    result = c.update_listing({"title": "Bike"})
-    assert result["status"] == "updated"
+    async def insert_listing(self, listing):
+        self.items.append(listing)
 
-def test_remove_listing():
-    c = SellrController()
-    result = c.remove_listing({"id": "123"})
-    assert result["status"] == "removed"
+    async def get_listings(self, query):
+        return self.items
+
+@pytest.mark.asyncio
+async def test_create_listing():
+    repo = FakeRepo()
+    service = ListingService(repo)
+    result = await service.create_listing({"title": "Bike", "price": 100})
+    assert result["success"] is True

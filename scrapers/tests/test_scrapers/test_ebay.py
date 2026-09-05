@@ -1,6 +1,10 @@
-from scrapers.scrapers.ebay_scraper import scrape_ebay
+import pytest
+import asyncio
+from scrapers.scrapers.ebay_scraper import run
 
-def test_ebay():
-    result = scrape_ebay()
-    assert "title" in result
-    assert "url" in result
+@pytest.mark.asyncio
+async def test_ebay_run():
+    result = await run("laptop")
+    assert "success" in result
+    assert "listings" in result
+    assert isinstance(result["listings"], list)

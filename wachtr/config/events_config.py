@@ -1,12 +1,11 @@
+# f1ndr-backend/watchr/config/events_config.py
 """
-Event field definitions for watchr.
-Defines the required fields for each event type.
+Event configuration for Watchr.
 """
 
-def event_fields():
+def get_events_config() -> dict:
     return {
-        "price_change": ["id", "old_price", "new_price"],
-        "new_listing": ["id", "title", "price", "url"],
-        "listing_update": ["id", "changes"],
-        "match_found": ["id", "query", "score"],
+        "enabled": True,
+        "max_events": 500,
+        "allow_dynamic_events": True,
     }

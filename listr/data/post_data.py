@@ -1,10 +1,12 @@
-"""
-Posting rules.
-"""
-
-def post_rules():
-    return {
-        "strip_whitespace": True,
-        "require_title": True,
-        "default_status": "posted"
-    }
+POST_DATA = {
+    "fields": [
+        "title",
+        "body",
+        "author",
+        "created_at",
+        "tags",
+    ],
+    "defaults": {
+        "tags": [],
+    },
+}

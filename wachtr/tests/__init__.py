@@ -1,4 +1,4 @@
+# f1ndr-backend/watchr/tests/__init__.py
 """
-watchr.tests
-Unit tests for watcher/trigger/event routing.
+Watchr tests package initializer.
 """

@@ -1,16 +1,9 @@
-def apply_validate_rules(payload, rules):
-    out = {"valid": True, "errors": []}
+class ValidationUtils:
+    def is_empty(self, value) -> bool:
+        return value is None or value == ""
 
-    if rules.get("check_title") and not payload.get("title"):
-        out["valid"] = False
-        out["errors"].append("Missing title")
+    def missing_fields(self, data: dict, required: list) -> list:
+        return [field for field in required if self.is_empty(data.get(field))]
 
-    if rules.get("check_price") and not payload.get("price"):
-        out["valid"] = False
-        out["errors"].append("Missing price")
 
-    if rules.get("check_location") and not payload.get("location"):
-        out["valid"] = False
-        out["errors"].append("Missing location")
-
-    return out
+validation_utils = ValidationUtils()

@@ -1,14 +1,8 @@
+# f1ndr-backend/trinn/core/validation_core.py
 """
-Validation utilities for trinn.
-Dict‑based. No Pydantic.
+TRINN validation utilities.
 """
 
-from typing import Dict, Any
-
-
-def validate_payload(data: Dict[str, Any]) -> Dict[str, Any]:
-    return {
-        "valid": isinstance(data, dict),
-        "fields": list(data.keys()),
-        "payload": data
-    }
+def require_fields(data: dict, fields: list) -> bool:
+    missing = [f for f in fields if f not in data]
+    return len(missing) == 0

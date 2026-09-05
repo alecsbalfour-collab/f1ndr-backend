@@ -1,6 +1,10 @@
-from scrapers.scrapers.used_scraper import scrape_used
+import pytest
+import asyncio
+from scrapers.scrapers.used_scraper import run
 
-def test_used():
-    result = scrape_used()
-    assert "title" in result
-    assert "url" in result
+@pytest.mark.asyncio
+async def test_used_run():
+    result = await run("tools")
+    assert "success" in result
+    assert "listings" in result
+    assert isinstance(result["listings"], list)

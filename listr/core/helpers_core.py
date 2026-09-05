@@ -1,8 +1,9 @@
-"""
-Helper functions for lisTr.
-"""
+class CoreHelpers:
+    def normalize(self, data: dict) -> dict:
+        return {k: v for k, v in data.items() if v is not None}
 
-def safe_field(value):
-    if value is None:
-        return ""
-    return str(value).strip()
+    def safe_get(self, data: dict, key: str, default=None):
+        return data.get(key, default)
+
+
+core_helpers = CoreHelpers()

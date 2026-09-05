@@ -1,10 +1,13 @@
-def get_environment_data() -> dict:
-    return {
-        "layer": "scraper",
-        "region": "us",
-        "timezone": "UTC",
-    }
+# scrapers/core/data/environment_data.py
 
-def enrich_environment_data(env: dict) -> dict:
-    env["meta"] = "scraper-environment"
-    return env
+import os
+
+def get_environment() -> dict:
+    """
+    Return scraper environment settings.
+    """
+    return {
+        "env": os.getenv("F1NDR_SCRAPER_ENV", "dev"),
+        "debug": os.getenv("F1NDR_SCRAPER_DEBUG", "false").lower() == "true",
+        "version": "1.0.0",
+    }

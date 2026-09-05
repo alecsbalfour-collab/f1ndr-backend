@@ -1,22 +1,21 @@
-from processors.interfaces.processor_interface import ProcessorInterface
+class BaseProcessor:
+    def __init__(self, base_config, logger, validator, exceptions, formatter):
+        self.base_config = base_config
+        self.logger = logger
+        self.validator = validator
+        self.exceptions = exceptions
+        self.formatter = formatter
 
+    def process(self, payload: dict) -> dict:
+        if not self.base_config.defaults().get("enabled", True):
+            self.logger.warning("Base processor disabled")
+            return {"status": "disabled"}
 
-class BaseProcessor(ProcessorInterface):
-    """
-    Enterprise-level base processor.
-    Provides shared validation and naming behavior.
-    """
+        errors = self.validator.validate(payload)
+        if errors:
+            self.logger.error(f"Validation errors: {errors}")
+            raise self.exceptions.ValidationException(str(errors))
 
-    def __init__(self, config, core, db):
-        self.config = config
-        self.core = core
-        self.db = db
-
-    def validate(self, text: str):
-        if not isinstance(text, str):
-            raise TypeError("Processor input must be a string.")
-        if not text.strip():
-            raise ValueError("Processor input cannot be empty.")
-
-    def name(self) -> str:
-        return self.__class__.__name__
+        formatted = self.formatter.format_payload(payload)
+        self.logger.info("Base processor completed")
+        return {"status": "ok", "payload": formatted}

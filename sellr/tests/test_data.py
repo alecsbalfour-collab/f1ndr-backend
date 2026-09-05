@@ -1,12 +1,12 @@
-from sellr.data.listing_data import listing_rules
-from sellr.data.update_data import update_rules
-from sellr.data.remove_data import remove_rules
+import pytest
+from sellr.data.listing_data import normalize_listing, validate_listing
 
-def test_listing_rules():
-    assert listing_rules()["require_title"] is True
+def test_normalize_listing():
+    raw = {"title": "Bike", "price": 100}
+    listing = normalize_listing(raw)
+    assert listing["title"] == "Bike"
+    assert listing["price"] == 100
 
-def test_update_rules():
-    assert update_rules()["allow_partial_updates"] is True
-
-def test_remove_rules():
-    assert remove_rules()["mark_removed"] is True
+def test_validate_listing():
+    assert validate_listing({"title": "Bike", "price": 100}) is True
+    assert validate_listing({"title": "", "price": 100}) is False

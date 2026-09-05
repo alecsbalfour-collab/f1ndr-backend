@@ -1,11 +1,14 @@
-def apply_post_rules(payload, rules):
-    out = payload.copy()
+class PostUtils:
+    def summarize(self, data: dict) -> dict:
+        return {
+            "title": data.get("title"),
+            "preview": (data.get("body") or "")[:100],
+        }
 
-    if rules.get("strip_whitespace"):
-        out = {k: str(v).strip() if isinstance(v, str) else v for k, v in out.items()}
+    def format_tags(self, tags) -> list:
+        if not tags:
+            return []
+        return [t.lower().strip() for t in tags]
 
-    if rules.get("require_title") and not out.get("title"):
-        out["title"] = "Untitled"
 
-    out["status"] = rules.get("default_status", "posted")
-    return out
+post_utils = PostUtils()

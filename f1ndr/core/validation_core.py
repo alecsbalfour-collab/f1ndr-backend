@@ -1,6 +1,5 @@
-"""
-Validation helpers for f1ndr.
-"""
+class ValidationCore:
+    def validate(self, payload: dict) -> dict:
+        return payload
 
-def is_valid_listing(listing: dict):
-    return bool(listing.get("title")) and bool(listing.get("url"))
+validation_core = ValidationCore()

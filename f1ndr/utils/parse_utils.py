@@ -1,9 +1,14 @@
-from bs4 import BeautifulSoup
+class ParseUtils:
+    def to_int(self, value):
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return None
 
-def to_dom(html: str):
-    """
-    Convert raw HTML → BeautifulSoup DOM safely.
-    """
-    if not html:
-        return None
-    return BeautifulSoup(html, "html.parser")
+    def to_float(self, value):
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return None
+
+parse_utils = ParseUtils()

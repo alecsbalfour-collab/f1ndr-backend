@@ -1,24 +1,10 @@
+# f1ndr-backend/trinn/config/pipeline_config.py
 """
-Pipeline configuration for trinn.
-Defines which steps each pipeline uses.
+Config for TRINN pipeline orchestration.
 """
 
-def pipeline_config():
+def get_pipeline_config() -> dict:
     return {
-        "default": {
-            "steps": ["normalize", "transform", "enrich"],
-            "description": "Standard trinn pipeline",
-        },
-        "normalize_only": {
-            "steps": ["normalize"],
-            "description": "Key/value normalization only",
-        },
-        "transform_only": {
-            "steps": ["transform"],
-            "description": "Basic transformation only",
-        },
-        "enrich_only": {
-            "steps": ["enrich"],
-            "description": "Metadata enrichment only",
-        },
+        "stages": ["enrich", "normalize", "transform"],
+        "async": True,
     }

@@ -1,14 +1,8 @@
+# f1ndr-backend/watchr/core/validation_core.py
 """
-Dict‑model validation for watchr.
-No Pydantic. No class‑models.
+Watchr validation utilities.
 """
 
-from typing import Dict, Any
-
-
-def validate_event_payload(data: Dict[str, Any]) -> Dict[str, Any]:
-    return {
-        "id": data.get("id"),
-        "type": data.get("type"),
-        "payload": data.get("payload", {}),
-    }
+def require_fields(data: dict, fields: list) -> bool:
+    missing = [f for f in fields if f not in data]
+    return len(missing) == 0

@@ -1,14 +1,14 @@
+# f1ndr-backend/trinn/data/normalize_data.py
 """
-Normalization rules for trinn.
-Defines how keys and values should be normalized.
+TRINN normalize data utilities.
 """
 
-from typing import Dict, Any
-
-
-def normalize_rules() -> Dict[str, Any]:
+def build_normalize_payload(enriched: dict) -> dict:
+    base = enriched.get("raw", {})
     return {
-        "key_case": "lower",
-        "trim_strings": True,
-        "collapse_spaces": True,
+        "id": base.get("id"),
+        "title": base.get("title"),
+        "price": base.get("price"),
+        "location": base.get("location"),
+        "source": enriched.get("source"),
     }

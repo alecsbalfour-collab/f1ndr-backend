@@ -1,12 +1,10 @@
+# f1ndr-backend/watchr/config/routing_config.py
 """
-Trigger routing configuration for watchr.
-Defines where each event should be dispatched.
+Routing configuration for Watchr.
 """
 
-def routing_table():
+def get_routing_config() -> dict:
     return {
-        "price_change": "notify.user",
-        "new_listing": "f1ndr.refresh",
-        "listing_update": "f1ndr.update",
-        "match_found": "notify.user",
+        "default_route": "watchr",
+        "allow_custom_routes": True,
     }

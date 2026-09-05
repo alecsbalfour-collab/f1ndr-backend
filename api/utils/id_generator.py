@@ -1,7 +1,7 @@
 import uuid
 
-def generate_id():
+def generate_id() -> str:
     """
-    Generates a unique ID for internal API use.
+    Generate a unique UUID string.
     """
     return str(uuid.uuid4())

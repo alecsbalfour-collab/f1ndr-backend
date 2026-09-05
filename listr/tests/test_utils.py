@@ -1,10 +1,15 @@
-from listr.utils.post_utils import apply_post_rules
-from listr.utils.validate_utils import apply_validate_rules
+from utils.dict_utils import dict_utils
+from utils.post_utils import post_utils
+from utils.validation_utils import validation_utils
 
-def test_post_utils():
-    out = apply_post_rules({"title": " Test "}, {"strip_whitespace": True})
-    assert out["title"] == "Test"
+def test_dict_utils_merge():
+    merged = dict_utils.merge({"a": 1}, {"b": 2})
+    assert merged == {"a": 1, "b": 2}
 
-def test_validate_utils():
-    out = apply_validate_rules({"title": "A"}, {"check_price": True})
-    assert out["valid"] is False
+def test_post_utils_summarize():
+    summary = post_utils.summarize({"title": "T", "body": "Hello World"})
+    assert summary["title"] == "T"
+
+def test_validation_utils_missing_fields():
+    missing = validation_utils.missing_fields({"title": "X"}, ["title", "body"])
+    assert missing == ["body"]

@@ -1,5 +1,6 @@
+# f1ndr-backend/trinn/__init__.py
 """
-trinn.data
-Data-layer definitions for transformation, normalization, and enrichment.
-Dict-based structures only.
+TRINN package initializer.
 """
+
+from .module import TrinnModule
