@@ -1,3 +1,9 @@
+
+import os
+import sys
+
+# Forces Python to recognize the current directory as the base module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import os
 import uvicorn
 from fastapi import FastAPI
