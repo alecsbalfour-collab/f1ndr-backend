@@ -1,8 +1,18 @@
-# f1ndr_backend/api/shutdown.py
+# f1ndr_backend/api/app_lifecycles.py
 
-async def on_shutdown():
+from fastapi import FastAPI
+from f1ndr_backend.api.startup import on_startup
+from f1ndr_backend.api.shutdown import on_shutdown
+
+def register_lifecycle_events(app: FastAPI):
     """
-    Shutdown hook for cleanup tasks.
-    Add cleanup logic here (closing DB connections, stopping workers, etc.)
+    Registers startup and shutdown lifecycle events for the FastAPI app.
     """
-    print("F1NDR backend is shutting down...")
+
+    @app.on_event("startup")
+    async def startup_event():
+        await on_startup()
+
+    @app.on_event("shutdown")
+    async def shutdown_event():
+        await on_shutdown()
