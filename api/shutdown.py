@@ -1,10 +1,8 @@
-from logging import getLogger
-
-logger = getLogger("api.shutdown")
+# f1ndr_backend/api/shutdown.py
 
 async def on_shutdown():
     """
-    Shutdown hook for cleanup.
-    Extend later with DB disconnects, cache flushes, etc.
+    Shutdown hook for cleanup tasks.
+    Add cleanup logic here (closing DB connections, stopping workers, etc.)
     """
-    logger.info("Application shutdown complete")
+    print("F1NDR backend is shutting down...")
