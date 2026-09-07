@@ -1,4 +1,4 @@
-from startup import on_startup
+from api.startup import on_startup
 from shutdown import on_shutdown
 
 def register_lifecycle(app):

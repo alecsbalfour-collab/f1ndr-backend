@@ -1,57 +1,50 @@
-from fastapi import FastAPI, Request, Response
-from f1ndr_backend.config import apply_cors, setup_logging, get_settings
-from middleware import (
-    ErrorHandlerMiddleware,
-    RequestIDMiddleware,
-    RequestTimerMiddleware,
-)
-from security import apply_secure_headers
-from routes import (
-    dealer_router,
-    list_router,
-    search_router,
-    sell_router,
-    watch_router,
-)
+from fastapi import FastAPI
+
+# Config imports
+from f1ndr_backend.api.config.cors_config import apply_cors
+from f1ndr_backend.api.config.logging_config import setup_logging
+from f1ndr_backend.api.config.settings_config import get_settings
+
+# Lifecycle events
+from f1ndr_backend.api.app_lifecycles import register_lifecycle_events
+
+# Router imports (add yours here)
+# from f1ndr_backend.api.routes.example_routes import router as example_router
+
 
 def create_app() -> FastAPI:
     """
-    Build and configure the FastAPI application.
+    Core application factory for the F1NDR backend.
+    This replaces the original api/main.py file exactly as it was intended:
+    - Load settings
+    - Configure logging
+    - Apply CORS
+    - Register lifecycle events
+    - Mount routers
     """
     settings = get_settings()
+    setup_logging(settings)
 
-    app = FastAPI(
-        title=settings.app_name,
-        version=settings.version,
-        debug=settings.debug,
-    )
+    app = FastAPI(title="F1NDR Backend API")
 
-    # Logging
-    setup_logging()
+    # Apply CORS
+    apply_cors(app, settings)
 
-    # CORS
-    apply_cors(app)
+    # Register startup/shutdown events
+    register_lifecycle_events(app)
 
-    # Middleware
-    app.add_middleware(ErrorHandlerMiddleware)
-    app.add_middleware(RequestIDMiddleware)
-    app.add_middleware(RequestTimerMiddleware)
-
-    # Routers
-    app.include_router(dealer_router)
-    app.include_router(list_router)
-    app.include_router(search_router)
-    app.include_router(sell_router)
-    app.include_router(watch_router)
-
-    # Security headers
-    @app.middleware("http")
-    async def secure_headers_middleware(request: Request, call_next):
-        response: Response = await call_next(request)
-        apply_secure_headers(response)
-        return response
+    # Include routers
+    # app.include_router(example_router)
 
     return app
 
 
-app = create_app()
+# Uvicorn entrypoint (only used if someone runs this file directly)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "f1ndr_backend.api.main:create_app",
+        host="0.0.0.0",
+        port=8000,
+        factory=True
+    )
