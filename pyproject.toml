@@ -16,6 +16,6 @@ dependencies = [
     "motor>=3.7.1,<4.0"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["f1ndr_backend*"]
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["pipelines", "f1ndr", "api", "db"]
