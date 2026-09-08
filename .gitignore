@@ -1,0 +1,109 @@
+# ============================
+# PYTHON / FASTAPI BACKEND
+# ============================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.cache/
+pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ============================
+# OS / EDITOR JUNK
+# ============================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+.history/
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# ============================
+# DOCKER
+# ============================
+
+# Docker artifacts
+*.pid
+*.seed
+*.pid.lock
+
+# ============================
+# ENVIRONMENT / SECRETS
+# ============================
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# ============================
+# LOGS
+# ============================
+
+*.log
+logs/
+log/
+
+# ============================
+# CACHE / TEMP
+# ============================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# ============================
+# F1NDR PROJECT SPECIFIC
+# ============================
+
+# Scraper cache
+cache/
+scraper_cache/
+
+# MongoDB dump files
+*.bson
+*.wt
+
+# Render build cache
+render.yaml
