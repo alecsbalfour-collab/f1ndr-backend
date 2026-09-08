@@ -1,4 +1,4 @@
-from .module import f1ndr_module, F1NDRModule
+from .module import f1ndr_module, f1ndrModule
 
 from .config import (
     api_config,
@@ -108,7 +108,7 @@ from .utils import (
 
 __all__ = [
     "f1ndr_module",
-    "F1NDRModule",
+    "f1ndrModule",
 
     "api_config",
     "APIConfig",

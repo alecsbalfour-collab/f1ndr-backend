@@ -4,8 +4,8 @@ import os
 
 def load_scraper_settings() -> dict:
     return {
-        "SCRAPER_ENV": os.getenv("F1NDR_SCRAPER_ENV", "dev"),
-        "SCRAPER_DEBUG": os.getenv("F1NDR_SCRAPER_DEBUG", "false").lower() == "true",
+        "SCRAPER_ENV": os.getenv("f1ndr_SCRAPER_ENV", "dev"),
+        "SCRAPER_DEBUG": os.getenv("f1ndr_SCRAPER_DEBUG", "false").lower() == "true",
         "VERSION": "1.0.0",
     }
 

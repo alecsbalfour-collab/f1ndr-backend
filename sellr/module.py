@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "F1NDR Backend (run_backend.py)",
+            "name": "f1ndr Backend (run_backend.py)",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/run_backend.py",
@@ -13,7 +13,7 @@
             }
         },
         {
-            "name": "F1NDR Backend (package mode)",
+            "name": "f1ndr Backend (package mode)",
             "type": "python",
             "request": "launch",
             "module": "run_backend",

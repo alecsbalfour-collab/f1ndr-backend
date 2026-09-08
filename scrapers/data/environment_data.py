@@ -7,7 +7,7 @@ def get_environment() -> dict:
     Return scraper environment settings.
     """
     return {
-        "env": os.getenv("F1NDR_SCRAPER_ENV", "dev"),
-        "debug": os.getenv("F1NDR_SCRAPER_DEBUG", "false").lower() == "true",
+        "env": os.getenv("f1ndr_SCRAPER_ENV", "dev"),
+        "debug": os.getenv("f1ndr_SCRAPER_DEBUG", "false").lower() == "true",
         "version": "1.0.0",
     }

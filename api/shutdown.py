@@ -5,4 +5,4 @@ async def on_shutdown():
     Shutdown hook for cleanup tasks.
     Add cleanup logic here (closing DB connections, stopping workers, etc.)
     """
-    print("F1NDR backend is shutting down...")
+    print("f1ndr backend is shutting down...")

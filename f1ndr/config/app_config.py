@@ -1,5 +1,5 @@
 class AppConfig:
-    name: str = "F1NDR Engine"
+    name: str = "f1ndr Engine"
     debug: bool = True
 
 app_config = AppConfig()

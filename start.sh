@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "Starting F1NDR backend..."
+echo "Starting f1ndr backend..."
 python3 run_backend.py

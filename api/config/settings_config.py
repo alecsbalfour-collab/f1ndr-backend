@@ -5,7 +5,7 @@ class Settings(BaseModel):
     """
     Centralized application settings.
     """
-    app_name: str = "F1NDR API"
+    app_name: str = "f1ndr API"
     version: str = "1.0.0"
     environment: str = "development"
     debug: bool = True

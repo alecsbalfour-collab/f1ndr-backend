@@ -1,4 +1,4 @@
-class F1NDRModule:
+class f1ndrModule:
     name: str = "f1ndr"
     version: str = "1.0.0"
 
@@ -9,4 +9,4 @@ class F1NDRModule:
         }
 
 
-f1ndr_module = F1NDRModule()
+f1ndr_module = f1ndrModule()

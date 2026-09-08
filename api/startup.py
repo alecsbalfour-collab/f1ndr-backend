@@ -6,10 +6,10 @@ async def on_startup():
     Reconstructed because the original api/main.py depended on this.
     Add your database connections or initialization logic here.
     """
-    print("F1NDR backend is starting up...")
+    print("f1ndr backend is starting up...")
 
 async def on_shutdown():
     """
     Shutdown hook for cleanup tasks.
     """
-    print("F1NDR backend is shutting down...")
+    print("f1ndr backend is shutting down...")

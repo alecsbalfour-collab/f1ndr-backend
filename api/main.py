@@ -14,7 +14,7 @@ from f1ndr_backend.api.app_lifecycles import register_lifecycle_events
 
 def create_app() -> FastAPI:
     """
-    Core application factory for the F1NDR backend.
+    Core application factory for the f1ndr backend.
     This replaces the original api/main.py file exactly as it was intended:
     - Load settings
     - Configure logging
@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     setup_logging(settings)
 
-    app = FastAPI(title="F1NDR Backend API")
+    app = FastAPI(title="f1ndr Backend API")
 
     # Apply CORS
     apply_cors(app, settings)
