@@ -1,4 +1,4 @@
-name: F1NDR Backend Tests
+name: f1ndr Backend Tests
 
 on:
   push:
