@@ -24,6 +24,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest
-        env:
-          PYTHONPATH: .
+          pytest --pythonpath=.
