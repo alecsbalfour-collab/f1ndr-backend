@@ -1,7 +1,5 @@
 
 # f1ndr_backend/tests/ingestion/test_ingestion_replay.py
-import sys
-sys.path.append(".")
 import pytest
 from motor.motor_asyncio import AsyncIOMotorClient
 from f1ndr_backend.pipelines.ingestion_history import record_ingestion
