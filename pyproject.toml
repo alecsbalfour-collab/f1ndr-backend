@@ -6,7 +6,6 @@ build-backend = "setuptools.build_meta"
 name = "f1ndr_backend"
 version = "0.1.0"
 description = "Enterprise Data Ingestion and Processing Backend"
-readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi==0.115.0",
