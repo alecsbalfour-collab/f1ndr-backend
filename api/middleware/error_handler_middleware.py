@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from errors import APIException, error_response
+from api.errors.error_handler import APIException, raise_api_error
 from logging import getLogger
 
 logger = getLogger("api.error")

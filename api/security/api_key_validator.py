@@ -1,31 +1,20 @@
+# api/security/api_key_validator.py
+
 from fastapi import Request
-from errors import raise_api_error
+from api.errors.error_handler import raise_api_error
+from api.security.api_keys import validate_api_key
 
 class APIKeyValidator:
-    """
-    Simple API key validator.
-    Expand later with DB-backed keys, roles, scopes, etc.
-    """
-
-    def __init__(self, valid_keys: list[str] | None = None):
-        self.valid_keys = valid_keys or []
-
-    def validate(self, request: Request) -> None:
+    @staticmethod
+    async def api_key_validator(request: Request):
         api_key = request.headers.get("X-API-Key")
 
         if not api_key:
-            raise_api_error(
-                status_code=401,
-                message="Missing API key",
-                details={"header": "X-API-Key"},
-            )
+            raise_api_error("Missing API key", 401)
 
-        if api_key not in self.valid_keys:
-            raise_api_error(
-                status_code=403,
-                message="Invalid API key",
-                details={"provided_key": api_key},
-            )
+        if not validate_api_key(api_key):
+            raise_api_error("Invalid API key", 403)
 
+        return True
 
-api_key_validator = APIKeyValidator(valid_keys=["dev-key"])
+api_key_validator = APIKeyValidator.api_key_validator

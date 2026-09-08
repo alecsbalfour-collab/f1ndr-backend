@@ -1,50 +1,61 @@
+# f1ndr_backend/api/main.py
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# Config imports
-from f1ndr_backend.api.config.cors_config import apply_cors
-from f1ndr_backend.api.config.logging_config import setup_logging
-from f1ndr_backend.api.config.settings_config import get_settings
+# Settings
+from api.config.settings_config import get_settings
 
-# Lifecycle events
-from f1ndr_backend.api.app_lifecycles import register_lifecycle_events
+# DB
+from db.connection_db import connect_to_db
+from db.indexing_db import apply_indexes
+from db.ttl_db import apply_ttl
 
-# Router imports (add yours here)
-# from f1ndr_backend.api.routes.example_routes import router as example_router
+# Security
+from api.security.rate_limiter import limiter
+from slowapi.middleware import SlowAPIMiddleware
+from api.middleware.abuse_middleware import AbuseMiddleware
+from api.security.api_key_validator import APIKeyValidator
 
+# Logging
+import logging
+from logs.structured_logger import StructuredLogger
 
-def create_app() -> FastAPI:
-    """
-    Core application factory for the f1ndr backend.
-    This replaces the original api/main.py file exactly as it was intended:
-    - Load settings
-    - Configure logging
-    - Apply CORS
-    - Register lifecycle events
-    - Mount routers
-    """
-    settings = get_settings()
-    setup_logging(settings)
+# Scheduler
+from scheduler.cleanup_jobs import (
+    cleanup_ingestion_temp,
+    cleanup_old_logs,
+)
 
-    app = FastAPI(title="f1ndr Backend API")
-
-    # Apply CORS
-    apply_cors(app, settings)
-
-    # Register startup/shutdown events
-    register_lifecycle_events(app)
-
-    # Include routers
-    # app.include_router(example_router)
-
-    return app
+# Routers
+from api.controllers.search_controller import router as search_router
+from api.controllers.dealer_controller import router as dealer_router
+from api.controllers.sell_controller import router as sell_router
 
 
-# Uvicorn entrypoint (only used if someone runs this file directly)
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "f1ndr_backend.api.main:create_app",
-        host="0.0.0.0",
-        port=8000,
-        factory=True
-    )
+# ---------------------------------------------------------
+# App Initialization
+# ---------------------------------------------------------
+
+settings = get_settings()
+app = FastAPI(title=settings.APP_NAME, version=settings.VERSION)
+
+# Render-friendly logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+startup_logger = StructuredLogger("startup")
+
+
+# ---------------------------------------------------------
+# Middleware
+# ---------------------------------------------------------
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Rate Limiting
+app.state.limiter = limiter

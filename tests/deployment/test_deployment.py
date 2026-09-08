@@ -1,0 +1,19 @@
+# f1ndr_backend/tests/deployment/test_deployment.py
+
+import os
+
+def test_required_env_vars():
+    required = [
+        "MONGO_URI",
+        "ENVIRONMENT",
+        "JWT_SECRET",
+        "JWT_ALGORITHM",
+    ]
+
+    for key in required:
+        assert os.getenv(key) is not None, f"Missing environment variable: {key}"
+
+
+def test_environment_is_valid():
+    env = os.getenv("ENVIRONMENT")
+    assert env in ["development", "staging", "production"]
