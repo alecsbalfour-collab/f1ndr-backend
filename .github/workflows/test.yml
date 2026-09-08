@@ -24,9 +24,12 @@ jobs:
           pip install pytest httpx locust
           pip install -e .
 
-      - name: Run tests
+            - name: Run tests
         env:
-          MONGO_URI: mongodb://localhost:27017/f1ndr_test
+          MONGO_URI: "mongodb+srv://founder:f1ndrIsnum1@f1ndrcluster1.ihlkc4s.mongodb.net/f1ndr?appName=f1ndrcluster1"
+          JWT_SECRET: "dev-testing-secret-key-12345"
+          JWT_ALGORITHM: HS256
           ENVIRONMENT: development
         run: |
           pytest
+
