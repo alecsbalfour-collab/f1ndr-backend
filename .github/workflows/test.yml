@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r f1ndr_backend/requirements.txt
+          pip install -r requirements.txt
           pip install pytest httpx locust
 
       - name: Run tests
