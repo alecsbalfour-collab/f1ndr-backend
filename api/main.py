@@ -1,61 +1,31 @@
-# f1ndr_backend/api/main.py
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Settings
-from api.config.settings_config import get_settings
-
-# DB
-from db.connection_db import connect_to_db
-from db.indexing_db import apply_indexes
-from db.ttl_db import apply_ttl
-
-# Security
-from api.security.rate_limiter import limiter
-from slowapi.middleware import SlowAPIMiddleware
-from api.middleware.abuse_middleware import AbuseMiddleware
-from api.security.api_key_validator import APIKeyValidator
-
-# Logging
-import logging
-from logs.structured_logger import StructuredLogger
-
-# Scheduler
-from scheduler.cleanup_jobs import (
-    cleanup_ingestion_temp,
-    cleanup_old_logs,
-)
-
-# Routers
+# Import your active controller routers
 from api.controllers.search_controller import router as search_router
 from api.controllers.dealer_controller import router as dealer_router
 from api.controllers.sell_controller import router as sell_router
 
+app = FastAPI(
+    title="f1ndr API Engine",
+    description="Enterprise endpoints for FlutterFlow schema integration",
+    version="1.0.0"
+)
 
-# ---------------------------------------------------------
-# App Initialization
-# ---------------------------------------------------------
-
-settings = get_settings()
-app = FastAPI(title=settings.APP_NAME, version=settings.VERSION)
-
-# Render-friendly logging
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-startup_logger = StructuredLogger("startup")
-
-
-# ---------------------------------------------------------
-# Middleware
-# ---------------------------------------------------------
-
-# CORS
+# Enable CORS middleware (Crucial: stops FlutterFlow from blocking your client calls)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Rate Limiting
-app.state.limiter = limiter
+# Explicitly register the routers onto the main orchestration app instance
+app.include_router(search_router)
+app.include_router(dealer_router)
+app.include_router(sell_router)
+
+@app.get("/")
+async def root():
+    return {"status": "operational", "message": "f1ndr API Engine is fully linked"}
