@@ -1,7 +1,7 @@
 from core.scheduler_core import SchedulerCore
-from core.job_runner import JobRunner
-from core.heartbeat import Heartbeat
-from core.watchdog import Watchdog
+from core.job_runner_core import JobRunner
+from core.heartbeat_core import Heartbeat
+from core.watchdog_core import Watchdog
 
 from config.scheduler_config import scheduler_config
 from config.intervals_config import intervals_config
