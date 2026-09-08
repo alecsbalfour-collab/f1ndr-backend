@@ -5,17 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "f1ndr_backend"
 version = "0.1.0"
-description = "Enterprise Data Ingestion and Processing Backend"
-requires-python = ">=3.11"
-dependencies = [
-    "fastapi==0.115.0",
-    "uvicorn[standard]==0.30.1",
-    "pydantic>=2.10.0",
-    "pydantic-settings>=2.4.0",
-    "pymongo>=4.9,<5.0",
-    "motor>=3.7.1,<4.0"
-]
+dependencies = []
 
-[tool.setuptools]
-package-dir = {"" = "."}
-packages = ["pipelines", "f1ndr", "api", "db"]
+[tool.setuptools.package-dir]
+"f1ndr_backend" = "."
