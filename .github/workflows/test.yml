@@ -25,5 +25,8 @@ jobs:
           pip install -e .
 
       - name: Run tests
+        env:
+          MONGO_URI: mongodb://localhost:27017/f1ndr_test
+          ENVIRONMENT: development
         run: |
           pytest
