@@ -1,65 +1,42 @@
-# scrapers/scrapers/craigslist_scraper.py
-
-import traceback
-import httpx
+from typing import Dict, List
 from bs4 import BeautifulSoup
 
-PLATFORM = "craigslist"
+from scrapers.base_scraper import BaseScraper
+
+BASE_URL = "https://calgary.craigslist.org/search/cta"
 
 
-async def fetch_html(url: str) -> str | None:
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(url)
-            resp.raise_for_status()
-            return resp.text
-    except Exception:
-        traceback.print_exc()
-        return None
+class CraigslistScraper(BaseScraper):
+    source_name = "craigslist"
+
+    def _run_internal(self) -> List[Dict[str, str]]:
+        html = self.fetch_html(BASE_URL, wait_selector=".result-row")
+        if not html:
+            return []
+        return self.parse(html)
+
+    def parse(self, html: str) -> List[Dict[str, str]]:
+        soup = BeautifulSoup(html, "html.parser")
+        rows = soup.select(".result-row")
+
+        listings = []
+        for row in rows:
+            title_el = row.select_one(".result-title")
+            price_el = row.select_one(".result-price")
+            link_el = row.select_one("a")
+
+            if not title_el or not price_el or not link_el:
+                continue
+
+            listings.append({
+                "title": title_el.get_text(strip=True),
+                "price": price_el.get_text(strip=True),
+                "url": link_el.get("href", "")
+            })
+
+        return listings
 
 
-def parse_html(html: str) -> list[dict]:
-    if not html:
-        return []
-
-    soup = BeautifulSoup(html, "html.parser")
-    listings = []
-
-    # TODO: replace selectors with real Craigslist structure
-    for item in soup.select(".result-row"):
-        listings.append({
-            "title": item.select_one(".result-title").get_text(strip=True) if item.select_one(".result-title") else None,
-            "price": item.select_one(".result-price").get_text(strip=True) if item.select_one(".result-price") else None,
-            "url": item.select_one("a")["href"] if item.select_one("a") else None,
-            "image": None,
-            "location": item.select_one(".result-hood").get_text(strip=True) if item.select_one(".result-hood") else None,
-            "posted_at": None,
-            "platform": PLATFORM,
-        })
-
-    return listings
-
-
-def build_url(query: str | None) -> str:
-    base = "https://craigslist.org/search/sss?query="
-    return f"{base}{query or ''}"
-
-
-async def run(query: str | None = None) -> dict:
-    try:
-        url = build_url(query)
-        html = await fetch_html(url)
-        listings = parse_html(html)
-
-        return {
-            "success": True,
-            "listings": listings,
-            "error": None,
-        }
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "success": False,
-            "listings": [],
-            "error": str(e),
-        }
+def run() -> Dict:
+    scraper = CraigslistScraper()
+    return scraper.run()

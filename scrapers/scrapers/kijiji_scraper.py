@@ -1,65 +1,48 @@
-# scrapers/scrapers/kijiji_scraper.py
+from typing import Dict, List
 
-import traceback
-import httpx
 from bs4 import BeautifulSoup
 
-PLATFORM = "kijiji"
+from scrapers.base_scraper import BaseScraper
+
+BASE_URL = "https://www.kijiji.ca/b-cars-vehicles/calgary/c27l1700199"
 
 
-async def fetch_html(url: str) -> str | None:
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(url)
-            resp.raise_for_status()
-            return resp.text
-    except Exception:
-        traceback.print_exc()
-        return None
+class KijijiScraper(BaseScraper):
+    source_name = "kijiji"
+
+    def _run_internal(self) -> List[Dict[str, str]]:
+        html = self.fetch_html(BASE_URL, wait_selector=".search-item")
+        if not html:
+            return []
+        return self.parse(html)
+
+    def parse(self, html: str) -> List[Dict[str, str]]:
+        soup = BeautifulSoup(html, "html.parser")
+        cards = soup.select(".search-item")
+
+        listings: List[Dict[str, str]] = []
+        for card in cards:
+            title_el = card.select_one(".title")
+            price_el = card.select_one(".price")
+            link_el = card.select_one("a")
+
+            if not title_el or not price_el or not link_el:
+                continue
+
+            listings.append(
+                {
+                    "title": title_el.get_text(strip=True),
+                    "price": price_el.get_text(strip=True),
+                    "url": "https://www.kijiji.ca" + (link_el.get("href") or ""),
+                }
+            )
+
+        return listings
 
 
-def parse_html(html: str) -> list[dict]:
-    if not html:
-        return []
-
-    soup = BeautifulSoup(html, "html.parser")
-    listings = []
-
-    # TODO: replace selectors with real Kijiji structure
-    for item in soup.select(".search-item"):
-        listings.append({
-            "title": item.select_one(".title").get_text(strip=True) if item.select_one(".title") else None,
-            "price": item.select_one(".price").get_text(strip=True) if item.select_one(".price") else None,
-            "url": item.select_one("a")["href"] if item.select_one("a") else None,
-            "image": item.select_one("img")["src"] if item.select_one("img") else None,
-            "location": item.select_one(".location").get_text(strip=True) if item.select_one(".location") else None,
-            "posted_at": None,
-            "platform": PLATFORM,
-        })
-
-    return listings
-
-
-def build_url(query: str | None) -> str:
-    base = "https://www.kijiji.ca/b-search.html?keywords="
-    return f"{base}{query or ''}"
-
-
-async def run(query: str | None = None) -> dict:
-    try:
-        url = build_url(query)
-        html = await fetch_html(url)
-        listings = parse_html(html)
-
-        return {
-            "success": True,
-            "listings": listings,
-            "error": None,
-        }
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "success": False,
-            "listings": [],
-            "error": str(e),
-        }
+def run() -> Dict:
+    """
+    Adapter for existing scheduler / backend call style.
+    """
+    scraper = KijijiScraper()
+    return scraper.run()
